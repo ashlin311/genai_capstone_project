@@ -22,8 +22,10 @@ TEMPERATURE = 0.3
 PLACEMENT_PROMPT = ChatPromptTemplate.from_template(
     """You are a placement preparation assistant.
 
-Answer only using the retrieved context below.
-If relevant context is not found, say:
+{jd_context_block}
+
+Answer only using the retrieved context. If the user asks specifically about the active Job Description (JD) details provided above, you can also use those details to answer.
+If relevant context is not found in the documents or the active JD, say:
 "I could not find enough relevant preparation material."
 
 Provide a well-structured, helpful answer with:
@@ -58,13 +60,14 @@ def get_llm():
     return llm
 
 
-def generate_answer(query: str, retrieved_chunks: list) -> str:
+def generate_answer(query: str, retrieved_chunks: list, jd_context: str = None) -> str:
     """
-    Generate an answer using the LLM with retrieved context.
+    Generate an answer using the LLM with retrieved context and optional JD context.
 
     Args:
         query: The user's question.
         retrieved_chunks: List of dicts with 'content' and 'source' keys.
+        jd_context: Optional active JD text/details context.
 
     Returns:
         The generated answer string.
@@ -75,9 +78,10 @@ def generate_answer(query: str, retrieved_chunks: list) -> str:
         for chunk in retrieved_chunks
     )
 
-    # If no context was retrieved, return a default message
-    if not context.strip():
-        return "I could not find enough relevant preparation material."
+    # Format the JD context block if present
+    jd_context_block = ""
+    if jd_context and jd_context.strip():
+        jd_context_block = f"--- ACTIVE JOB DESCRIPTION CONTEXT ---\n{jd_context.strip()}\n--------------------------------------"
 
     # Create the prompt and generate the answer
     llm = get_llm()
@@ -86,6 +90,7 @@ def generate_answer(query: str, retrieved_chunks: list) -> str:
     response = chain.invoke({
         "context": context,
         "query": query,
+        "jd_context_block": jd_context_block,
     })
 
     return response.content

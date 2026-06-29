@@ -41,6 +41,10 @@ class QueryRequest(BaseModel):
             "example": "TCS AI Intern Python FastAPI RAG interview preparation"
         },
     )
+    jd_context: str | None = Field(
+        None,
+        description="Optional active JD context summary or raw text to guide the query"
+    )
 
 
 class QueryResponse(BaseModel):
@@ -57,6 +61,7 @@ class JDResponse(BaseModel):
     preferred_skills: list[str]
     keywords: list[str]
     search_query: str
+    raw_text: str = Field(description="The raw text extracted from the JD PDF")
 
 
 class FullPipelineResponse(BaseModel):
@@ -69,6 +74,7 @@ class FullPipelineResponse(BaseModel):
     search_query: str
     answer: str
     sources: list[str]
+    raw_text: str = Field(description="The raw text extracted from the JD PDF")
 
 
 class HealthResponse(BaseModel):
@@ -198,6 +204,7 @@ async def parse_jd(file: UploadFile = File(..., description="Job description PDF
         preferred_skills=jd_data["preferred_skills"],
         keywords=jd_data["keywords"],
         search_query=search_query,
+        raw_text=raw_text,
     )
 
 
@@ -223,10 +230,11 @@ async def ask_question(request: QueryRequest):
             k=5,
         )
 
-        # Step 2: Generate answer using LLM
+        # Step 2: Generate answer using LLM (with optional active JD context)
         answer = generate_answer(
             query=request.query,
             retrieved_chunks=retrieved_chunks,
+            jd_context=request.jd_context,
         )
 
         # Step 3: Extract unique source filenames
@@ -305,10 +313,11 @@ async def prepare_from_jd(
             k=5,
         )
 
-        # Generate personalized preparation answer
+        # Generate personalized preparation answer (passing full parsed text as JD context)
         answer = generate_answer(
             query=search_query,
             retrieved_chunks=retrieved_chunks,
+            jd_context=raw_text,
         )
 
         sources = list(set(chunk["source"] for chunk in retrieved_chunks))
@@ -330,6 +339,7 @@ async def prepare_from_jd(
         search_query=search_query,
         answer=answer,
         sources=sources,
+        raw_text=raw_text,
     )
 
 

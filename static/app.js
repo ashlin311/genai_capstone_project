@@ -162,11 +162,17 @@ async function handleChatSubmit(e) {
     const typingIndicatorId = appendTypingIndicator();
     scrollToBottom('chat-messages-box');
 
+    // Build the request payload, adding JD context if available in state
+    const payload = { query: query };
+    if (state.lastExtractedMeta && state.lastExtractedMeta.raw_text) {
+        payload.jd_context = state.lastExtractedMeta.raw_text;
+    }
+
     try {
         const response = await fetch('/ask', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query: query })
+            body: JSON.stringify(payload)
         });
 
         // Remove Typing Indicator
@@ -367,7 +373,8 @@ async function processUploadedJDFile(file) {
             preferred_skills: data.preferred_skills,
             keywords: data.keywords,
             search_query: data.search_query,
-            sources: data.sources
+            sources: data.sources,
+            raw_text: data.raw_text
         };
 
         // Render Results
