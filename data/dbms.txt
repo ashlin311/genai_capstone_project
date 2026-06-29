@@ -1,0 +1,311 @@
+DATABASE MANAGEMENT SYSTEMS (DBMS) — INTERVIEW PREPARATION
+============================================================
+
+Topic: ACID Properties, Normalization, Joins, Indexing, Transactions, SQL, and DBMS Interview Questions
+
+---
+
+OVERVIEW
+--------
+DBMS is one of the most frequently tested subjects in placement interviews. Companies like TCS, Infosys, Wipro, and Accenture include DBMS questions in their technical rounds. Topics include SQL queries, normalization forms, ACID properties, transactions, indexing, and the differences between SQL and NoSQL. This document covers everything you need.
+
+---
+
+SECTION 1: ACID PROPERTIES
+----------------------------
+ACID ensures reliable database transactions.
+
+A — Atomicity:
+- A transaction is either fully completed or fully rolled back
+- No partial execution
+- Example: bank transfer — debit and credit either both happen or neither does
+
+C — Consistency:
+- Database moves from one valid state to another
+- All integrity constraints must be satisfied after a transaction
+- Example: total money in a bank system remains constant after a transfer
+
+I — Isolation:
+- Concurrent transactions execute as if they are serial
+- Intermediate states of a transaction are not visible to other transactions
+- Isolation levels: Read Uncommitted, Read Committed, Repeatable Read, Serializable
+
+D — Durability:
+- Once a transaction is committed, it persists even after a system crash
+- Achieved through write-ahead logging (WAL) and recovery mechanisms
+
+Frequently Asked Questions:
+- What does ACID stand for? Explain each property.
+- What is a transaction?
+- What happens if atomicity is violated? → Partial updates leave database inconsistent
+- What is the difference between Repeatable Read and Serializable isolation?
+
+---
+
+SECTION 2: NORMALIZATION
+--------------------------
+Normalization: organizing database to reduce data redundancy and improve data integrity.
+
+First Normal Form (1NF):
+- Each column must contain atomic (indivisible) values
+- No repeating groups
+- Each row must be unique
+- Violation example: storing multiple phone numbers in one cell
+
+Second Normal Form (2NF):
+- Must be in 1NF
+- No partial dependency: every non-key attribute must depend on the entire primary key (not just part of it)
+- Applicable when primary key is composite
+- Violation: in a table with (StudentID, CourseID) as key, storing StudentName depends only on StudentID — partial dependency
+
+Third Normal Form (3NF):
+- Must be in 2NF
+- No transitive dependency: non-key attributes must not depend on other non-key attributes
+- Violation: ZipCode → City; if table has ZipCode and City, City depends on ZipCode, not primary key
+
+Boyce-Codd Normal Form (BCNF):
+- Stronger version of 3NF
+- For every functional dependency X → Y, X must be a superkey
+- Eliminates some anomalies that 3NF misses
+
+Denormalization:
+- Intentionally introducing redundancy to improve read performance
+- Used in data warehouses and reporting systems
+- Trade-off: better read speed, worse write speed, more storage
+
+Functional Dependency:
+- X → Y means knowing X determines the value of Y
+- Full dependency: Y depends on the entire composite key
+- Partial dependency: Y depends on part of the composite key
+- Transitive dependency: X → Z and Z → Y means Y transitively depends on X
+
+Frequently Asked Questions:
+- What are the different normal forms?
+- What is a functional dependency?
+- What is partial dependency? Give an example.
+- What is transitive dependency?
+- Why do we normalize a database?
+- What are insertion, deletion, and update anomalies?
+
+---
+
+SECTION 3: SQL — STRUCTURED QUERY LANGUAGE
+-------------------------------------------
+SQL Categories:
+- DDL (Data Definition Language): CREATE, ALTER, DROP, TRUNCATE
+- DML (Data Manipulation Language): INSERT, UPDATE, DELETE, SELECT
+- DCL (Data Control Language): GRANT, REVOKE
+- TCL (Transaction Control Language): COMMIT, ROLLBACK, SAVEPOINT
+
+Basic SQL Syntax:
+  SELECT column1, column2
+  FROM table_name
+  WHERE condition
+  GROUP BY column
+  HAVING condition
+  ORDER BY column ASC/DESC
+  LIMIT n;
+
+Important Clauses:
+- WHERE: filters rows before aggregation
+- HAVING: filters groups after GROUP BY
+- GROUP BY: groups rows with same values
+- DISTINCT: removes duplicate rows
+- ORDER BY: sorts result
+
+Aggregate Functions:
+- COUNT(*): count all rows
+- COUNT(column): count non-null values
+- SUM(column): total
+- AVG(column): average
+- MAX(column): maximum value
+- MIN(column): minimum value
+
+Frequently Asked SQL Interview Questions:
+- Find the second highest salary:
+  SELECT MAX(salary) FROM employees WHERE salary < (SELECT MAX(salary) FROM employees);
+  OR:
+  SELECT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1;
+
+- Find employees with salary greater than their manager's salary
+- Find duplicate records in a table
+- Delete duplicate records keeping only one
+- Find employees who joined in the last 30 days
+- List departments with more than 5 employees
+- Find the nth highest salary using ROW_NUMBER()
+
+---
+
+SECTION 4: JOINS
+-----------------
+Joins combine rows from two or more tables based on related columns.
+
+Types of Joins:
+
+1. INNER JOIN (JOIN):
+   - Returns rows that have matching values in both tables
+   - Most common join type
+   - Query: SELECT * FROM A INNER JOIN B ON A.id = B.id;
+
+2. LEFT JOIN (LEFT OUTER JOIN):
+   - Returns all rows from left table and matched rows from right table
+   - Unmatched right side columns are NULL
+   - Use case: find all customers and their orders (including customers with no orders)
+
+3. RIGHT JOIN (RIGHT OUTER JOIN):
+   - Returns all rows from right table and matched rows from left table
+   - Unmatched left side columns are NULL
+
+4. FULL OUTER JOIN:
+   - Returns all rows from both tables
+   - NULL where there is no match on either side
+   - Not supported directly in MySQL (use UNION of LEFT and RIGHT JOIN)
+
+5. CROSS JOIN:
+   - Returns Cartesian product of both tables
+   - Every row from table A paired with every row from table B
+   - Result: rows in A × rows in B
+
+6. SELF JOIN:
+   - A table joined with itself
+   - Use case: find employees who have the same manager; find hierarchy
+
+7. NATURAL JOIN:
+   - Automatically joins on columns with the same name and datatype
+   - Risky — column name changes can break queries
+
+Join Interview Questions:
+- Find all customers who have never placed an order (LEFT JOIN + WHERE right.id IS NULL)
+- Find employees and their managers' names (SELF JOIN)
+- List all products and their categories including products with no category (LEFT JOIN)
+- What is the difference between INNER JOIN and OUTER JOIN?
+- What is the difference between JOIN and UNION?
+
+UNION vs JOIN:
+- JOIN combines columns (horizontal merge)
+- UNION combines rows (vertical merge) — must have same number of columns and compatible types
+- UNION removes duplicates; UNION ALL keeps duplicates
+
+---
+
+SECTION 5: INDEXING
+--------------------
+What is an Index:
+- Data structure that speeds up data retrieval
+- Similar to a book's index — points to the location of data
+- Trade-off: faster reads, slower writes, extra storage
+
+Types of Indexes:
+- Primary Index: built on primary key, always unique
+- Secondary Index: built on non-key columns
+- Clustered Index: data rows are stored in index order (only one per table)
+- Non-clustered Index: index is separate from data (multiple allowed per table)
+- Composite Index: index on multiple columns
+- Unique Index: ensures no duplicate values in indexed column
+- Full-text Index: for text search queries
+
+B+ Tree Index:
+- Most common index structure in relational databases (MySQL, PostgreSQL)
+- Leaf nodes contain actual data pointers; linked for range queries
+- O(log n) for search, insert, delete
+
+When to use indexes:
+- Columns frequently used in WHERE, JOIN, ORDER BY, GROUP BY
+- Columns with high selectivity (many unique values)
+
+When NOT to use indexes:
+- Small tables (full scan may be faster)
+- Columns with low selectivity (e.g., gender: only M/F)
+- Tables with frequent inserts/updates (index maintenance overhead)
+
+Frequently Asked Questions:
+- What is the difference between clustered and non-clustered index?
+- Why can a table have only one clustered index?
+- What is a composite index and when is it useful?
+- What is the difference between index scan and index seek?
+- What is a covering index?
+
+---
+
+SECTION 6: TRANSACTIONS AND CONCURRENCY
+-----------------------------------------
+Transaction States:
+- Active: transaction is executing
+- Partially Committed: final statement executed, not yet committed
+- Committed: changes made permanent
+- Failed: transaction cannot proceed
+- Aborted: rolled back, database restored to state before transaction
+
+Concurrency Problems:
+1. Dirty Read: reading uncommitted data from another transaction
+2. Non-repeatable Read: reading same row twice gives different results (another transaction modified it between reads)
+3. Phantom Read: re-running a query gives different rows (another transaction inserted/deleted rows)
+4. Lost Update: two transactions update same row, one update is lost
+
+Isolation Levels (SQL Standard):
+- Read Uncommitted: allows dirty reads (lowest isolation)
+- Read Committed: no dirty reads; allows non-repeatable reads
+- Repeatable Read: no dirty or non-repeatable reads; allows phantom reads (MySQL default)
+- Serializable: no dirty, non-repeatable, or phantom reads (highest isolation, lowest concurrency)
+
+Concurrency Control Methods:
+- Locking: shared lock (read), exclusive lock (write)
+- Two-Phase Locking (2PL): growing phase (acquire locks) and shrinking phase (release locks)
+- Timestamp Ordering: use timestamps to order transactions
+- MVCC (Multi-Version Concurrency Control): maintain multiple versions of data — used in PostgreSQL, MySQL InnoDB
+
+Frequently Asked Questions:
+- What is a dirty read, non-repeatable read, phantom read?
+- What are transaction isolation levels?
+- What is two-phase locking?
+- What is deadlock in DBMS and how to handle it?
+
+---
+
+SECTION 7: DATABASE DESIGN CONCEPTS
+--------------------------------------
+Keys:
+- Primary Key: uniquely identifies each row; not null, not duplicate
+- Foreign Key: references primary key of another table; enforces referential integrity
+- Candidate Key: minimal set of attributes that can uniquely identify a row
+- Super Key: any set of attributes that uniquely identifies a row (may have extra attributes)
+- Composite Key: primary key made of multiple columns
+- Surrogate Key: system-generated key (e.g., auto-increment ID)
+
+Entity-Relationship (ER) Model:
+- Entity: real-world object (Student, Course)
+- Attribute: property of entity (StudentID, Name)
+- Relationship: association between entities (Student ENROLLS IN Course)
+- Cardinality: one-to-one, one-to-many, many-to-many
+
+SQL vs NoSQL:
+SQL (Relational):
+- Structured data with schema
+- ACID transactions
+- Vertical scaling
+- Examples: MySQL, PostgreSQL, Oracle, SQL Server
+
+NoSQL:
+- Flexible schema (schema-less)
+- Eventual consistency (BASE: Basically Available, Soft State, Eventually Consistent)
+- Horizontal scaling
+- Types: Document (MongoDB), Key-Value (Redis), Column (Cassandra), Graph (Neo4j)
+- Use case: unstructured data, real-time applications, big data
+
+When to use NoSQL:
+- Need to store flexible/unstructured data
+- High read/write speed required
+- Horizontal scaling required
+- Exact consistency not critical
+
+Frequently Asked Questions:
+- Difference between primary key and unique key?
+- What is referential integrity?
+- When would you choose NoSQL over SQL?
+- What is CAP theorem? → Consistency, Availability, Partition Tolerance — you can only guarantee 2 of 3
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+DBMS interview, SQL interview questions, ACID properties, normalization, 1NF 2NF 3NF BCNF, functional dependency, SQL joins, inner join, left join, right join, outer join, full join, self join, cross join, indexing, clustered index, non-clustered index, B+ tree, transactions, isolation levels, dirty read, phantom read, concurrency control, foreign key, primary key, ER model, NoSQL vs SQL, CAP theorem, second highest salary SQL, DBMS placement questions

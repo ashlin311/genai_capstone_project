@@ -1,0 +1,303 @@
+COMPUTER NETWORKS (CN) — INTERVIEW PREPARATION
+===============================================
+
+Topic: OSI Model, TCP/IP, HTTP, DNS, Routing, Subnetting, and Network Interview Questions
+
+---
+
+OVERVIEW
+--------
+Computer Networks is a fundamental subject in technical interviews for software and network engineering roles. Questions range from the OSI model and TCP/IP stack to HTTP protocols, DNS resolution, routing algorithms, and subnetting. This document covers all essential networking concepts tested in placement interviews.
+
+---
+
+SECTION 1: OSI MODEL (7 LAYERS)
+---------------------------------
+The OSI (Open Systems Interconnection) model is a conceptual framework that standardizes how different network systems communicate.
+
+Layer 7 — Application Layer:
+- Interface between user applications and the network
+- Protocols: HTTP, HTTPS, FTP, SMTP, DNS, SSH, Telnet
+- Example: when you open a website, the browser uses HTTP at this layer
+
+Layer 6 — Presentation Layer:
+- Data translation, encryption, compression
+- Converts data to a format the application layer can use
+- Protocols: SSL/TLS (encryption), JPEG, MPEG (compression)
+
+Layer 5 — Session Layer:
+- Establishes, maintains, and terminates sessions between applications
+- Manages dialog control and synchronization
+- Protocols: NetBIOS, RPC
+
+Layer 4 — Transport Layer:
+- End-to-end communication and data flow control
+- Segmentation and reassembly of data
+- Protocols: TCP (reliable), UDP (unreliable but fast)
+- Responsible for port numbers
+
+Layer 3 — Network Layer:
+- Logical addressing (IP addresses) and routing
+- Determines best path for data delivery
+- Protocols: IP, ICMP, ARP, OSPF, BGP
+- Devices: Router
+
+Layer 2 — Data Link Layer:
+- Physical addressing (MAC addresses)
+- Frame creation, error detection (CRC)
+- Protocols: Ethernet, Wi-Fi (802.11), PPP
+- Devices: Switch, Bridge
+
+Layer 1 — Physical Layer:
+- Raw bit transmission over physical medium (cables, radio waves)
+- Defines voltage levels, cable types, data rates
+- Devices: Hub, Repeater, Cables, Modem
+
+Memory Trick: "Please Do Not Throw Sausage Pizza Away" (Physical, Data Link, Network, Transport, Session, Presentation, Application)
+
+Frequently Asked Questions:
+- What are the 7 layers of OSI model?
+- What happens at each layer when you access a website?
+- At which layer does routing occur? → Network Layer (Layer 3)
+- At which layer does TCP operate? → Transport Layer (Layer 4)
+- What is the difference between OSI and TCP/IP model?
+
+---
+
+SECTION 2: TCP/IP MODEL
+------------------------
+The TCP/IP model is the practical model used on the internet (not OSI, which is theoretical).
+
+4 Layers of TCP/IP:
+1. Network Access (Link) Layer → corresponds to OSI Layers 1+2
+2. Internet Layer → corresponds to OSI Layer 3 (IP, ICMP, ARP)
+3. Transport Layer → corresponds to OSI Layer 4 (TCP, UDP)
+4. Application Layer → corresponds to OSI Layers 5+6+7 (HTTP, FTP, DNS, SMTP)
+
+OSI vs TCP/IP:
+- OSI: 7 layers, theoretical reference model
+- TCP/IP: 4 layers, practical implementation model used on the internet
+- OSI separates presentation and session from application; TCP/IP combines all into application layer
+
+---
+
+SECTION 3: TCP VS UDP
+-----------------------
+TCP (Transmission Control Protocol):
+- Connection-oriented: three-way handshake before data transfer
+- Reliable: guarantees delivery, ordering, and error checking
+- Flow control: prevents sender from overwhelming receiver
+- Congestion control: manages network congestion
+- Slower than UDP due to overhead
+- Use cases: web browsing (HTTP), email (SMTP), file transfer (FTP), database connections
+
+UDP (User Datagram Protocol):
+- Connectionless: no handshake
+- Unreliable: no guarantee of delivery, ordering, or duplicate protection
+- Faster than TCP — low latency
+- No congestion or flow control
+- Use cases: live streaming, video calls, online gaming, DNS queries, VoIP
+
+TCP Three-Way Handshake:
+1. SYN: client sends SYN (synchronize) to server
+2. SYN-ACK: server responds with SYN-ACK (synchronize-acknowledge)
+3. ACK: client sends ACK (acknowledge) — connection established
+
+TCP Four-Way Termination:
+1. FIN from client
+2. ACK from server
+3. FIN from server
+4. ACK from client
+
+Frequently Asked Questions:
+- What is the difference between TCP and UDP?
+- When would you use UDP over TCP?
+- Explain the TCP three-way handshake
+- What is TCP congestion control? (Slow start, Congestion avoidance, Fast retransmit, Fast recovery)
+- What are TCP ports? → 16-bit numbers (0-65535) identifying specific services
+
+---
+
+SECTION 4: HTTP AND HTTPS
+--------------------------
+HTTP (HyperText Transfer Protocol):
+- Application layer protocol for web communication
+- Stateless: each request is independent (no memory of previous requests)
+- Default port: 80
+- Methods: GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS
+
+HTTP Methods:
+- GET: retrieve data (idempotent, safe)
+- POST: create new resource (not idempotent)
+- PUT: update entire resource (idempotent)
+- PATCH: partial update (not necessarily idempotent)
+- DELETE: remove resource (idempotent)
+- HEAD: like GET but only returns headers
+- OPTIONS: describes communication options for target resource
+
+HTTP Status Codes:
+- 1xx: Informational (100 Continue)
+- 2xx: Success (200 OK, 201 Created, 204 No Content)
+- 3xx: Redirection (301 Moved Permanently, 302 Found, 304 Not Modified)
+- 4xx: Client Error (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 429 Too Many Requests)
+- 5xx: Server Error (500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable)
+
+HTTPS:
+- HTTP over SSL/TLS — encrypted communication
+- Default port: 443
+- SSL (Secure Sockets Layer) and TLS (Transport Layer Security) provide: encryption, authentication, data integrity
+- TLS handshake: client hello → server hello + certificate → key exchange → encrypted communication
+
+HTTP/1.1 vs HTTP/2 vs HTTP/3:
+- HTTP/1.1: one request per connection (persistent connections)
+- HTTP/2: multiplexing — multiple requests over single connection; header compression
+- HTTP/3: uses QUIC (UDP-based) instead of TCP — lower latency
+
+Frequently Asked Questions:
+- What is the difference between HTTP and HTTPS?
+- What HTTP method is used to create a resource? → POST
+- What does status code 404 mean? 500? 401? 403?
+- What is REST? → Architectural style using HTTP methods
+- What is statelessness in HTTP?
+
+---
+
+SECTION 5: DNS (DOMAIN NAME SYSTEM)
+-------------------------------------
+What DNS Does:
+- Translates human-readable domain names to IP addresses
+- "Phone book of the internet"
+- Example: www.google.com → 142.250.195.46
+
+DNS Resolution Process:
+1. User types www.example.com in browser
+2. Browser checks local DNS cache
+3. If not cached, query goes to Recursive Resolver (usually provided by ISP or 8.8.8.8)
+4. Recursive Resolver queries Root DNS Server (knows TLD servers)
+5. Root server refers to TLD Name Server (e.g., .com server)
+6. TLD server refers to Authoritative Name Server for example.com
+7. Authoritative server returns IP address
+8. IP cached and returned to browser
+
+DNS Record Types:
+- A Record: domain → IPv4 address
+- AAAA Record: domain → IPv6 address
+- CNAME: alias from one domain to another
+- MX Record: mail exchange server for a domain
+- NS Record: name server for a domain
+- TXT Record: text information (used for verification, SPF)
+- PTR Record: reverse DNS — IP → domain
+
+Frequently Asked Questions:
+- What is DNS and how does it work?
+- What is the difference between authoritative DNS and recursive DNS?
+- What is DNS caching and TTL?
+- What is DNS spoofing/poisoning? → Corrupting DNS cache with false records
+- What are the different types of DNS records?
+
+---
+
+SECTION 6: IP ADDRESSING AND SUBNETTING
+-----------------------------------------
+IPv4 Address:
+- 32-bit address, written as 4 octets (e.g., 192.168.1.1)
+- Total: 2^32 = ~4.3 billion addresses
+- Address classes:
+  - Class A: 1.0.0.0 - 126.255.255.255 (large networks)
+  - Class B: 128.0.0.0 - 191.255.255.255 (medium networks)
+  - Class C: 192.0.0.0 - 223.255.255.255 (small networks)
+
+Private IP Ranges (not routable on internet):
+- 10.0.0.0 - 10.255.255.255 (Class A)
+- 172.16.0.0 - 172.31.255.255 (Class B)
+- 192.168.0.0 - 192.168.255.255 (Class C)
+
+Subnet Mask:
+- Determines which part of IP is network and which is host
+- Example: 255.255.255.0 means first 24 bits = network, last 8 bits = host
+- CIDR notation: 192.168.1.0/24 (24 bits for network)
+
+Subnetting:
+- Dividing a network into smaller networks
+- /24 subnet: 256 total addresses, 254 usable hosts
+- /25 subnet: 128 total addresses, 126 usable hosts
+- /26 subnet: 64 total addresses, 62 usable hosts
+
+IPv6:
+- 128-bit address (solves IPv4 exhaustion)
+- Written as 8 groups of 4 hex digits: 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+- Total: 2^128 addresses — practically unlimited
+
+NAT (Network Address Translation):
+- Maps multiple private IPs to one public IP
+- Allows many devices to share one public IP address
+- Performed by router/gateway
+
+---
+
+SECTION 7: ROUTING
+--------------------
+Routing: process of selecting the best path for network traffic.
+
+Routing Algorithms:
+- Distance Vector (RIP): each router knows distance to neighbors; shares table with neighbors; converges slowly; limited to 15 hops
+- Link State (OSPF): each router knows the entire network topology; uses Dijkstra's algorithm; faster convergence
+- Path Vector (BGP): used between autonomous systems (internet backbone); carries full path information
+
+Static vs Dynamic Routing:
+- Static: manually configured routes — simple but not scalable
+- Dynamic: routes learned automatically via routing protocols (RIP, OSPF, BGP)
+
+ARP (Address Resolution Protocol):
+- Resolves IP address to MAC address on local network
+- ARP request broadcast: "Who has IP 192.168.1.5?"
+- ARP reply: "I have that IP, my MAC is XX:XX:XX:XX"
+
+ICMP (Internet Control Message Protocol):
+- Used for diagnostics and error reporting
+- ping uses ICMP echo request/reply
+- traceroute uses ICMP TTL exceeded messages
+
+Frequently Asked Questions:
+- What is the difference between routing and switching?
+- What is the difference between OSPF and RIP?
+- What is BGP and why is it important?
+- What is ARP? What is a gratuitous ARP?
+- What is the difference between a hub, switch, and router?
+  - Hub: broadcasts to all ports
+  - Switch: sends to specific MAC address (Layer 2)
+  - Router: routes between networks using IP (Layer 3)
+
+---
+
+SECTION 8: FIREWALLS AND SECURITY
+------------------------------------
+Firewall:
+- Controls incoming and outgoing network traffic based on rules
+- Types: packet filtering, stateful inspection, application proxy
+
+Common Network Attacks:
+- DDoS (Distributed Denial of Service): overwhelm server with traffic
+- Man-in-the-Middle: intercepting communication between two parties
+- DNS Spoofing: corrupting DNS cache
+- ARP Poisoning: sending fake ARP messages to associate attacker's MAC with a legitimate IP
+- Port Scanning: discovering open ports on a host
+
+Ports to Know:
+- 22: SSH
+- 23: Telnet
+- 25: SMTP
+- 53: DNS
+- 80: HTTP
+- 110: POP3
+- 143: IMAP
+- 443: HTTPS
+- 3306: MySQL
+- 5432: PostgreSQL
+- 8080: HTTP alternate
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+computer networks, CN interview questions, OSI model, TCP/IP model, TCP vs UDP, three-way handshake, HTTP HTTPS, HTTP methods GET POST PUT DELETE, status codes, DNS domain name system, IP addressing, subnetting, CIDR, routing, OSPF, BGP, ARP, ICMP, firewall, NAT, IPv4 IPv6, network interview questions, placement networking, HTTP/2, REST API networking

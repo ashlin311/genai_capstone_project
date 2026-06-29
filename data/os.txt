@@ -1,0 +1,287 @@
+OPERATING SYSTEMS (OS) — INTERVIEW PREPARATION
+===============================================
+
+Topic: Process Management, Memory Management, Scheduling, Deadlock, Synchronization, and OS Interview Questions
+
+---
+
+OVERVIEW
+--------
+Operating Systems is a core computer science subject tested in almost every technical interview for software engineering roles. Topics like process vs thread, scheduling algorithms, deadlock, paging, and virtual memory appear repeatedly across TCS, Infosys, Accenture, Amazon, and other companies. This document covers all important OS concepts with definitions, explanations, and interview questions.
+
+---
+
+SECTION 1: PROCESS AND THREAD
+-------------------------------
+Process:
+- A program in execution
+- Has its own memory space (code, data, heap, stack)
+- Heavyweight — process creation and context switch are expensive
+- Processes are isolated from each other
+
+Thread:
+- A lightweight unit of execution within a process
+- Shares memory (heap, code, data) with other threads in the same process
+- Has its own stack and registers
+- Thread creation is faster than process creation
+- Communication between threads is easier (shared memory) but requires synchronization
+
+Process vs Thread Comparison:
+- Memory: process has own memory; threads share memory
+- Overhead: process creation is heavy; thread creation is light
+- Communication: IPC (pipes, sockets) for processes; shared memory for threads
+- Crash: one process crash doesn't affect others; one thread crash can crash the process
+- Context switch: slower for processes, faster for threads
+
+Frequently Asked Questions:
+- What is the difference between process and thread?
+- What is a daemon thread?
+- What is a zombie process? → A process that has finished execution but still has an entry in the process table
+- What is an orphan process? → A process whose parent has died; adopted by init (PID 1)
+- What is context switching? → Saving and loading state when CPU switches between processes
+- What is PCB (Process Control Block)? → Data structure storing process info: PID, state, registers, memory info
+
+---
+
+SECTION 2: CPU SCHEDULING ALGORITHMS
+--------------------------------------
+Scheduling Goal: maximize CPU utilization, minimize waiting time, maximize throughput
+
+Key Terms:
+- Burst time: CPU time required by a process
+- Arrival time: when process enters ready queue
+- Turnaround time: total time from arrival to completion = completion - arrival
+- Waiting time: time spent waiting in ready queue = turnaround - burst
+- Response time: time from arrival to first CPU response
+
+Scheduling Algorithms:
+
+1. FCFS (First Come First Serve):
+   - Non-preemptive
+   - Simple but suffers from convoy effect
+   - High waiting time if long processes arrive first
+
+2. SJF (Shortest Job First):
+   - Non-preemptive: run shortest burst time process first
+   - Optimal average waiting time — but requires knowing burst time in advance
+   - Starvation: long processes may never run
+
+3. SRTF (Shortest Remaining Time First):
+   - Preemptive version of SJF
+   - Best average waiting time among all algorithms
+
+4. Round Robin:
+   - Each process gets a fixed time quantum
+   - Preemptive — fair to all processes
+   - Performance depends on time quantum size
+   - Large quantum → acts like FCFS; small quantum → too many context switches
+
+5. Priority Scheduling:
+   - Each process has a priority; highest priority runs first
+   - Can be preemptive or non-preemptive
+   - Problem: starvation; Solution: aging (gradually increase priority)
+
+6. Multilevel Queue:
+   - Processes divided into groups (foreground, background)
+   - Each queue has its own scheduling algorithm
+
+Frequently Asked Questions:
+- What is the convoy effect in FCFS? → Short processes wait behind a long process
+- What is starvation? How do you prevent it? → Low-priority processes never execute; prevented by aging
+- What is aging? → Gradually increasing priority of waiting processes
+- Which algorithm has minimum average waiting time? → SJF (non-preemptive), SRTF (preemptive)
+- What is preemptive vs non-preemptive scheduling?
+
+---
+
+SECTION 3: DEADLOCK
+--------------------
+Definition: A situation where a set of processes are blocked because each process is holding a resource and waiting to acquire a resource held by another process.
+
+Four Necessary Conditions (Coffman's Conditions):
+1. Mutual Exclusion: resource can be held by only one process at a time
+2. Hold and Wait: a process holding resources can request more
+3. No Preemption: resources cannot be forcibly taken from a process
+4. Circular Wait: a circular chain of processes each waiting for the next
+
+Deadlock Handling Strategies:
+
+1. Deadlock Prevention:
+   - Eliminate one of the four conditions
+   - Example: require all resources be requested at once (eliminates hold and wait)
+
+2. Deadlock Avoidance:
+   - Banker's Algorithm: check if granting a request leaves system in a safe state
+   - Safe state: there exists a sequence in which all processes can complete
+
+3. Deadlock Detection and Recovery:
+   - Allow deadlocks to occur, detect them using resource allocation graph
+   - Recovery: kill a process, rollback, or preempt resources
+
+4. Deadlock Ignorance (Ostrich Algorithm):
+   - Ignore the problem — used by most OS (including Linux, Windows) for rare deadlocks
+
+Frequently Asked Questions:
+- What are the four conditions for deadlock?
+- Explain Banker's Algorithm
+- How is deadlock detected using a resource allocation graph?
+- What is a safe state in deadlock avoidance?
+- How do you recover from a deadlock?
+
+---
+
+SECTION 4: SYNCHRONIZATION — SEMAPHORE AND MUTEX
+--------------------------------------------------
+Race Condition:
+- Occurs when two or more threads access shared data concurrently and the outcome depends on execution order
+- Example: two threads incrementing a shared counter — one update may be lost
+
+Critical Section:
+- Code segment where shared resources are accessed
+- Must ensure: mutual exclusion, progress, bounded waiting
+
+Mutex (Mutual Exclusion Lock):
+- Binary lock: locked or unlocked
+- Only the thread that locked it can unlock it
+- Used to protect a critical section
+- Operations: lock() and unlock()
+
+Semaphore:
+- Integer variable used for signaling between threads
+- Two types:
+  - Binary semaphore (0 or 1): similar to mutex
+  - Counting semaphore: can be any non-negative integer
+- Operations: wait() [P operation, decrements] and signal() [V operation, increments]
+- Key difference from mutex: any thread can call signal, not just the one that called wait
+
+Mutex vs Semaphore:
+- Mutex: ownership (locker must be unlocker); protects critical section
+- Semaphore: no ownership; used for signaling and resource counting
+- Use mutex for mutual exclusion; use semaphore for signaling
+
+Classic Synchronization Problems:
+1. Producer-Consumer Problem
+2. Readers-Writers Problem
+3. Dining Philosophers Problem
+
+Frequently Asked Questions:
+- What is a race condition?
+- What is a critical section?
+- Difference between mutex and semaphore?
+- What is a binary semaphore vs counting semaphore?
+- What is a monitor in OS? → High-level synchronization construct
+- What is a spinlock? → Thread loops checking for lock availability (busy waiting)
+
+---
+
+SECTION 5: MEMORY MANAGEMENT
+------------------------------
+Types of Memory:
+- Physical memory: actual RAM
+- Logical/Virtual memory: address space seen by a process
+
+Memory Management Techniques:
+
+1. Contiguous Allocation:
+   - Each process gets a contiguous block of memory
+   - Problems: external fragmentation, inflexible
+
+2. Paging:
+   - Physical memory divided into fixed-size frames
+   - Logical memory divided into same-size pages
+   - Page table maps logical page to physical frame
+   - Eliminates external fragmentation; may have internal fragmentation
+   - TLB (Translation Lookaside Buffer): cache for page table entries
+
+3. Segmentation:
+   - Memory divided into logical segments (code, data, stack)
+   - Each segment has base address and limit
+   - Eliminates internal fragmentation; may have external fragmentation
+
+4. Paged Segmentation: combination of both
+
+Fragmentation:
+- Internal fragmentation: wasted space inside an allocated block
+- External fragmentation: enough total free space but not contiguous
+
+Page Replacement Algorithms (when RAM is full):
+- FIFO: replace the oldest page in memory
+- Optimal (OPT): replace the page that will not be used for longest time (theoretical best)
+- LRU (Least Recently Used): replace the page not used for longest time — most commonly used
+- Clock Algorithm: approximation of LRU
+
+Frequently Asked Questions:
+- What is paging? How does address translation work?
+- What is a page fault? → Accessing a page not currently in RAM
+- What is thrashing? → CPU spending more time on page replacement than executing processes
+- What is TLB and why is it used?
+- Difference between paging and segmentation?
+- What is working set of a process?
+
+---
+
+SECTION 6: VIRTUAL MEMORY
+---------------------------
+Concept:
+- Allows a process to use more memory than physically available
+- OS keeps frequently used pages in RAM; rest on disk (swap space)
+- Gives illusion of large contiguous memory to each process
+
+Page Fault Handling:
+1. Process accesses a page not in RAM
+2. Page fault interrupt triggered
+3. OS finds the page on disk
+4. If RAM is full, OS runs page replacement algorithm
+5. Page loaded into a free frame
+6. Page table updated
+7. Process resumes
+
+Demand Paging:
+- Pages loaded into memory only when demanded (not in advance)
+- Reduces memory usage; initial access causes page fault
+
+Thrashing:
+- Occurs when system spends more time paging than executing
+- Caused by too many processes competing for too little memory
+- Solution: reduce degree of multiprogramming, use working set model
+
+Frequently Asked Questions:
+- What is the difference between virtual memory and physical memory?
+- Explain demand paging
+- What causes thrashing and how is it resolved?
+- What is the working set model?
+
+---
+
+SECTION 7: FILE SYSTEMS
+------------------------
+File System Functions:
+- Organize, store, retrieve, name, and manage files on disk
+
+File Allocation Methods:
+1. Contiguous Allocation: file occupies consecutive disk blocks — fast read, fragmentation issue
+2. Linked Allocation: each block points to next — no fragmentation, slow random access
+3. Indexed Allocation: index block stores pointers to all file blocks — fast random access
+
+Directory Structures:
+- Single-level: all files in one directory
+- Two-level: separate directories per user
+- Tree-structured: hierarchical (used in modern OS)
+- Acyclic-graph: allows shared files (symbolic links)
+
+File Access Permissions (Unix):
+- Read (r), Write (w), Execute (x)
+- Three levels: owner, group, others
+- Example: chmod 755 file → owner: rwx, group: r-x, others: r-x
+
+Frequently Asked Questions:
+- What is an inode? → Data structure storing file metadata (not name or content)
+- Difference between hard link and soft link (symbolic link)?
+- What is RAID? → Redundant Array of Independent Disks — for redundancy and performance
+- What is journaling in file systems?
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+operating systems, OS interview questions, process vs thread, CPU scheduling, FCFS, SJF, round robin, priority scheduling, deadlock, Coffman conditions, Banker's algorithm, mutex, semaphore, synchronization, race condition, critical section, paging, virtual memory, page fault, thrashing, TLB, memory management, fragmentation, page replacement LRU, file system, inode, process management, context switching, zombie process, orphan process

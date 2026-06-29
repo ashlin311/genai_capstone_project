@@ -1,0 +1,397 @@
+PYTHON INTERVIEW PREPARATION
+=============================
+
+Topic: Decorators, Generators, Iterators, GIL, Data Structures, Functions, and Python Interview Questions
+
+---
+
+OVERVIEW
+--------
+Python is the most commonly used language in placement interviews for AI, ML, data science, and backend roles. Companies test Python-specific features like decorators, generators, list comprehensions, and memory management. This document covers all major Python interview topics with explanations, code examples, and commonly asked questions.
+
+---
+
+SECTION 1: PYTHON BASICS AND DATA TYPES
+-----------------------------------------
+Python is dynamically typed, interpreted, and uses garbage collection for memory management.
+
+Core Data Types:
+- int, float, complex: numeric types
+- str: immutable sequence of characters
+- list: mutable ordered sequence — [1, 2, 3]
+- tuple: immutable ordered sequence — (1, 2, 3)
+- dict: mutable key-value pairs — {"key": "value"}
+- set: mutable unordered unique elements — {1, 2, 3}
+- frozenset: immutable set
+- bool: True or False
+- bytes, bytearray: binary data
+- NoneType: None
+
+List vs Tuple:
+- List is mutable: can add, remove, modify elements
+- Tuple is immutable: cannot change after creation
+- Tuples are faster to iterate and use less memory
+- Use tuples for fixed data (coordinates, RGB values); use lists for collections that change
+
+List vs Set:
+- Set has no duplicates and is unordered
+- Set lookup is O(1); list lookup is O(n)
+- Use set when you need unique elements or fast membership testing
+
+Dict vs Set:
+- Dict stores key-value pairs; set stores only keys
+- Both use hash tables internally
+- Both have O(1) average for lookup, insert, delete
+
+Mutable vs Immutable:
+- Mutable: list, dict, set, bytearray
+- Immutable: int, float, str, tuple, frozenset, bytes
+- Immutable objects can be used as dict keys and set elements
+
+---
+
+SECTION 2: FUNCTIONS — *args AND **kwargs
+------------------------------------------
+*args:
+- Allows a function to accept any number of positional arguments
+- Inside the function, args is a tuple
+
+  def add(*args):
+      return sum(args)
+
+  add(1, 2, 3)      # returns 6
+  add(1, 2, 3, 4)   # returns 10
+
+**kwargs:
+- Allows a function to accept any number of keyword arguments
+- Inside the function, kwargs is a dict
+
+  def display(**kwargs):
+      for key, val in kwargs.items():
+          print(f"{key} = {val}")
+
+  display(name="Ashlin", role="AI Intern")
+
+Combining all:
+  def func(a, b, *args, **kwargs):
+      pass
+
+Order rule: positional → *args → keyword-only → **kwargs
+
+Frequently Asked Questions:
+- What is the difference between *args and **kwargs?
+- What is the order of parameters in a function definition?
+- What is a default argument? Can it be mutable? → Avoid mutable default args (common bug)
+
+Mutable Default Argument Bug:
+  # Bug:
+  def append(item, lst=[]):
+      lst.append(item)
+      return lst
+
+  # Fix:
+  def append(item, lst=None):
+      if lst is None:
+          lst = []
+      lst.append(item)
+      return lst
+
+---
+
+SECTION 3: DECORATORS
+-----------------------
+What is a Decorator:
+- A function that takes another function as input, adds behavior, and returns a new function
+- Syntactic sugar for higher-order functions
+- Used for logging, authentication, timing, caching, input validation
+
+Basic Decorator:
+  def my_decorator(func):
+      def wrapper(*args, **kwargs):
+          print("Before function call")
+          result = func(*args, **kwargs)
+          print("After function call")
+          return result
+      return wrapper
+
+  @my_decorator
+  def greet(name):
+      print(f"Hello {name}")
+
+  greet("Ashlin")
+  # Output:
+  # Before function call
+  # Hello Ashlin
+  # After function call
+
+This is equivalent to: greet = my_decorator(greet)
+
+Common Built-in Decorators:
+- @staticmethod: method doesn't take self or cls
+- @classmethod: method takes cls instead of self
+- @property: define getter method (access without calling)
+- @functools.lru_cache: memoization cache
+- @functools.wraps: preserves original function metadata
+
+Decorator with Arguments:
+  def repeat(times):
+      def decorator(func):
+          def wrapper(*args, **kwargs):
+              for _ in range(times):
+                  func(*args, **kwargs)
+          return wrapper
+      return decorator
+
+  @repeat(3)
+  def say_hello():
+      print("Hello")
+
+Use Case Examples:
+- Timing decorator: measure execution time
+- Auth decorator: check if user is logged in before executing function
+- Logging decorator: log all function calls
+- Rate limiting: limit how many times a function can be called
+
+Frequently Asked Questions:
+- What is a decorator in Python?
+- How do decorators work internally?
+- What is @functools.wraps and why is it important?
+- Can you stack multiple decorators? → Yes, they apply bottom to top
+
+---
+
+SECTION 4: GENERATORS AND ITERATORS
+--------------------------------------
+Iterator:
+- An object that implements __iter__() and __next__() methods
+- __iter__ returns the iterator object itself
+- __next__ returns the next value; raises StopIteration when exhausted
+- Lists, tuples, dicts, strings are all iterable (but not iterators)
+- Convert to iterator: iter([1, 2, 3])
+
+Generator:
+- Special type of iterator created using yield keyword
+- Generates values lazily — one at a time — saves memory
+- State is preserved between yield calls (local variables, execution position)
+
+Basic Generator:
+  def count_up(n):
+      i = 1
+      while i <= n:
+          yield i
+          i += 1
+
+  gen = count_up(5)
+  print(next(gen))  # 1
+  print(next(gen))  # 2
+  for val in gen:
+      print(val)    # 3, 4, 5
+
+Generator Expression (like list comprehension but lazy):
+  squares = (x*x for x in range(10))   # generator
+  squares_list = [x*x for x in range(10)]  # list (all in memory)
+
+When to Use Generators:
+- Reading large files line by line
+- Generating infinite sequences
+- Data processing pipelines
+- When you don't need all values at once
+
+Iterator vs Generator:
+- Generator is a type of iterator
+- Generators are easier to write (yield vs implementing __next__)
+- Both are lazy — generate on demand
+
+  # Custom iterator
+  class Counter:
+      def __init__(self, n):
+          self.n = n
+          self.i = 0
+      def __iter__(self):
+          return self
+      def __next__(self):
+          if self.i >= self.n:
+              raise StopIteration
+          self.i += 1
+          return self.i
+
+Frequently Asked Questions:
+- What is the difference between an iterator and a generator?
+- What does yield do? How is it different from return?
+- What is lazy evaluation?
+- What is a generator expression vs list comprehension?
+
+---
+
+SECTION 5: GIL — GLOBAL INTERPRETER LOCK
+------------------------------------------
+What is GIL:
+- A mutex that protects access to Python objects, preventing multiple threads from executing Python bytecode simultaneously
+- Only one thread executes Python code at a time (even on multi-core CPUs)
+- Part of CPython (the standard Python implementation)
+
+Why GIL Exists:
+- Simplifies CPython's memory management (reference counting)
+- Prevents race conditions in the interpreter itself
+
+Implications:
+- CPU-bound multi-threaded programs don't benefit from multiple cores
+- I/O-bound programs (file I/O, network) are fine — threads release GIL during I/O
+
+How to Work Around GIL:
+- For CPU-bound work: use multiprocessing module (separate processes, no GIL)
+- For I/O-bound work: use threading module (GIL released during I/O waits)
+- Use async/await with asyncio for concurrent I/O without threads
+- Use PyPy or Cython for performance-critical code
+
+Frequently Asked Questions:
+- What is the GIL?
+- Does the GIL affect multi-threaded Python programs?
+- How do you achieve parallelism in Python despite the GIL?
+- What is the difference between threading and multiprocessing in Python?
+- What is asyncio and when do you use it?
+
+---
+
+SECTION 6: COMPREHENSIONS
+---------------------------
+List Comprehension:
+  squares = [x**2 for x in range(10)]
+  evens = [x for x in range(20) if x % 2 == 0]
+  flat = [item for sublist in nested for item in sublist]
+
+Dict Comprehension:
+  word_lengths = {word: len(word) for word in ["hello", "world"]}
+
+Set Comprehension:
+  unique_squares = {x**2 for x in [-2, -1, 0, 1, 2]}
+
+Generator Expression:
+  total = sum(x**2 for x in range(1000))  # no list created in memory
+
+Nested Comprehension:
+  matrix = [[i*j for j in range(1, 4)] for i in range(1, 4)]
+
+---
+
+SECTION 7: MEMORY MANAGEMENT AND INTERNALS
+--------------------------------------------
+Reference Counting:
+- Python tracks how many references point to each object
+- When count reaches 0, memory is freed
+- Problem: circular references (A → B → A)
+- Solution: garbage collector handles circular references
+
+Memory Pool:
+- Python caches small integers (-5 to 256) and short strings
+- These are reused rather than recreated each time
+
+id() and is vs ==:
+- id(): returns memory address of object
+- is: compares identity (same memory address)
+- ==: compares value
+  a = [1, 2, 3]
+  b = [1, 2, 3]
+  a == b   # True (same value)
+  a is b   # False (different objects)
+
+Copy vs Deep Copy:
+- Shallow copy: copies object, inner objects still shared
+- Deep copy: recursively copies all nested objects
+  import copy
+  a = [[1, 2], [3, 4]]
+  b = copy.copy(a)       # shallow — modifying b[0] affects a[0]
+  c = copy.deepcopy(a)   # deep — fully independent
+
+---
+
+SECTION 8: PYTHON SPECIFIC CONCEPTS
+--------------------------------------
+Lambda Functions:
+- Anonymous single-expression functions
+- square = lambda x: x**2
+- Used with map(), filter(), sorted()
+  sorted(people, key=lambda p: p["age"])
+
+map() and filter():
+  squares = list(map(lambda x: x**2, [1, 2, 3, 4]))
+  evens = list(filter(lambda x: x % 2 == 0, [1, 2, 3, 4]))
+
+zip():
+  pairs = list(zip([1, 2, 3], ['a', 'b', 'c']))  # [(1,'a'), (2,'b'), (3,'c')]
+
+enumerate():
+  for i, val in enumerate(['a', 'b', 'c']):
+      print(i, val)
+
+String Methods:
+  s.strip(), s.split(), s.join(), s.replace(), s.upper(), s.lower()
+  s.startswith(), s.endswith(), s.find(), s.format(), f-strings
+
+Exception Handling:
+  try:
+      result = 10 / 0
+  except ZeroDivisionError as e:
+      print(f"Error: {e}")
+  except Exception as e:
+      print(f"Unexpected: {e}")
+  else:
+      print("No error")
+  finally:
+      print("Always runs")
+
+Context Managers (with statement):
+  with open('file.txt', 'r') as f:
+      content = f.read()
+  # file automatically closed even if exception occurs
+
+  # Custom context manager:
+  class ManagedResource:
+      def __enter__(self): return self
+      def __exit__(self, exc_type, exc_val, tb): pass
+
+Dunder / Magic Methods:
+  __init__: constructor
+  __str__: string representation for users (str())
+  __repr__: string representation for developers (repr())
+  __len__: len() on object
+  __eq__: == operator
+  __lt__: < operator
+  __add__: + operator (operator overloading)
+  __getitem__: [] access
+  __contains__: in operator
+
+---
+
+SECTION 9: PYTHON FOR BACKEND / FASTAPI CONTEXT
+-------------------------------------------------
+Type Hints (Python 3.5+):
+  def add(a: int, b: int) -> int:
+      return a + b
+
+  from typing import List, Dict, Optional, Union
+  def process(items: List[str]) -> Dict[str, int]:
+      return {item: len(item) for item in items}
+
+Pydantic (used in FastAPI):
+  from pydantic import BaseModel
+
+  class User(BaseModel):
+      name: str
+      age: int
+      email: Optional[str] = None
+
+Async Python:
+  import asyncio
+
+  async def fetch_data():
+      await asyncio.sleep(1)  # non-blocking wait
+      return "data"
+
+  asyncio.run(fetch_data())
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+Python interview questions, Python decorators, Python generators, iterators, yield, GIL global interpreter lock, list vs tuple, mutable immutable Python, *args **kwargs, list comprehension, dict comprehension, lambda function, map filter, Python memory management, reference counting, shallow copy deep copy, dunder methods, magic methods, Python OOP, async await Python, type hints Pydantic, Python placement questions, Python technical interview

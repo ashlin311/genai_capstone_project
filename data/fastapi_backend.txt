@@ -1,0 +1,401 @@
+FASTAPI AND BACKEND DEVELOPMENT — INTERVIEW PREPARATION
+=========================================================
+
+Topic: FastAPI Concepts, Pydantic, Dependency Injection, Async Programming, REST APIs, JWT Auth, and Backend Interview Questions
+
+---
+
+OVERVIEW
+--------
+FastAPI is a modern, fast Python web framework for building APIs. It is gaining rapid adoption in AI/ML backends, microservices, and data-heavy applications. FastAPI interview questions appear in roles focused on AI engineering, backend development, and MLOps. This document covers FastAPI-specific concepts alongside general backend and REST API knowledge.
+
+---
+
+SECTION 1: WHAT IS FASTAPI
+----------------------------
+FastAPI is a modern Python web framework that:
+- Is built on Starlette (ASGI framework) and Pydantic (data validation)
+- Uses Python type hints for automatic data validation and serialization
+- Auto-generates interactive API documentation (Swagger UI at /docs, ReDoc at /redoc)
+- Supports async/await natively — true asynchronous request handling
+- Is one of the fastest Python frameworks — comparable to Node.js and Go
+
+Comparison with Flask and Django:
+- Flask: lightweight, synchronous by default, manual validation, no auto-docs
+- Django: full-stack, includes ORM, admin panel, but heavier; REST via Django REST Framework
+- FastAPI: purpose-built for APIs, type-safe, async-first, auto-docs out of the box
+
+When to use FastAPI:
+- Building REST APIs or microservices
+- ML model serving endpoints
+- High-performance async backends
+- When you want automatic documentation and validation
+
+---
+
+SECTION 2: BASIC FASTAPI APPLICATION
+--------------------------------------
+Minimal Application:
+  from fastapi import FastAPI
+
+  app = FastAPI()
+
+  @app.get("/")
+  def read_root():
+      return {"message": "Hello, World"}
+
+  @app.get("/items/{item_id}")
+  def read_item(item_id: int, q: str = None):
+      return {"item_id": item_id, "query": q}
+
+Running:
+  uvicorn main:app --reload
+
+HTTP Method Decorators:
+  @app.get("/")       # Read
+  @app.post("/")      # Create
+  @app.put("/")       # Update (full)
+  @app.patch("/")     # Update (partial)
+  @app.delete("/")    # Delete
+
+Path Parameters:
+  @app.get("/users/{user_id}")
+  def get_user(user_id: int):
+      return {"user_id": user_id}
+
+Query Parameters:
+  @app.get("/items")
+  def get_items(skip: int = 0, limit: int = 10):
+      return {"skip": skip, "limit": limit}
+
+Frequently Asked Questions:
+- What is FastAPI built on? → Starlette + Pydantic
+- What server does FastAPI use? → Uvicorn (ASGI server) or Gunicorn with Uvicorn workers
+- What is ASGI vs WSGI?
+  - WSGI (Web Server Gateway Interface): synchronous, one request at a time per process (Flask, Django)
+  - ASGI (Async Server Gateway Interface): asynchronous, handles concurrent connections (FastAPI, Django Channels)
+- How does FastAPI auto-generate documentation?
+
+---
+
+SECTION 3: PYDANTIC AND DATA VALIDATION
+-----------------------------------------
+Pydantic:
+- Data validation library using Python type hints
+- FastAPI uses Pydantic models for request body validation and serialization
+- Automatically raises 422 Unprocessable Entity if validation fails
+
+Basic Pydantic Model:
+  from pydantic import BaseModel, EmailStr
+  from typing import Optional
+
+  class User(BaseModel):
+      name: str
+      age: int
+      email: EmailStr
+      is_active: bool = True
+      bio: Optional[str] = None
+
+Using in FastAPI:
+  @app.post("/users")
+  def create_user(user: User):
+      return {"received": user.dict()}
+
+Pydantic Features:
+- Type coercion: "42" → int 42
+- Field validators: @validator decorator
+- Nested models: model inside a model
+- .dict(): convert to dictionary
+- .json(): serialize to JSON string
+- .parse_obj(): create model from dict
+
+Field Validation:
+  from pydantic import BaseModel, validator, Field
+
+  class Product(BaseModel):
+      name: str = Field(..., min_length=1, max_length=100)
+      price: float = Field(..., gt=0)  # must be greater than 0
+
+      @validator("name")
+      def name_must_not_be_empty(cls, v):
+          if not v.strip():
+              raise ValueError("name cannot be empty or whitespace")
+          return v
+
+Frequently Asked Questions:
+- What is Pydantic and why does FastAPI use it?
+- What happens when validation fails in FastAPI? → 422 Unprocessable Entity response
+- What is the difference between Optional[str] and str in Pydantic?
+- How do you add custom validators in Pydantic?
+- What is BaseModel.dict() vs BaseModel.json()?
+
+---
+
+SECTION 4: DEPENDENCY INJECTION
+---------------------------------
+Dependency Injection (DI) in FastAPI:
+- A way to declare shared logic (database connections, authentication, config) that functions depend on
+- FastAPI resolves and injects these dependencies automatically
+- Makes code reusable, testable, and clean
+
+Basic Dependency:
+  from fastapi import Depends
+
+  def get_db():
+      db = DatabaseSession()
+      try:
+          yield db
+      finally:
+          db.close()
+
+  @app.get("/users")
+  def get_users(db = Depends(get_db)):
+      return db.query(User).all()
+
+Authentication Dependency:
+  def get_current_user(token: str = Header(...)):
+      # decode token, return user
+      user = decode_jwt(token)
+      if not user:
+          raise HTTPException(status_code=401, detail="Invalid token")
+      return user
+
+  @app.get("/profile")
+  def get_profile(user = Depends(get_current_user)):
+      return {"user": user}
+
+Nested Dependencies:
+  def verify_admin(user = Depends(get_current_user)):
+      if not user.is_admin:
+          raise HTTPException(status_code=403, detail="Not authorized")
+      return user
+
+  @app.delete("/users/{user_id}")
+  def delete_user(user_id: int, admin = Depends(verify_admin)):
+      pass
+
+Frequently Asked Questions:
+- What is dependency injection in FastAPI?
+- How is it different from just calling a function?
+- What is the use of yield in a dependency?
+- How do you inject a database session into a route?
+
+---
+
+SECTION 5: ASYNC PROGRAMMING IN FASTAPI
+-----------------------------------------
+Sync vs Async Route:
+  # Synchronous — blocks the event loop (use for CPU-bound or sync libs)
+  @app.get("/sync")
+  def sync_route():
+      result = some_sync_operation()
+      return result
+
+  # Asynchronous — non-blocking (use for I/O: DB, HTTP calls, file)
+  @app.get("/async")
+  async def async_route():
+      result = await some_async_operation()
+      return result
+
+When to use async:
+- Awaiting database queries (asyncpg, Motor, SQLAlchemy async)
+- Making HTTP requests (httpx, aiohttp)
+- Reading/writing files
+- Calling external APIs
+
+When NOT to use async:
+- CPU-intensive computation (use multiprocessing or background tasks)
+- Calling synchronous libraries (wrap in run_in_executor if needed)
+
+Background Tasks:
+  from fastapi import BackgroundTasks
+
+  def send_email(email: str):
+      # long operation run in background
+      pass
+
+  @app.post("/register")
+  def register(email: str, background_tasks: BackgroundTasks):
+      background_tasks.add_task(send_email, email)
+      return {"message": "Registered, email will be sent"}
+
+Frequently Asked Questions:
+- What is the difference between sync and async routes in FastAPI?
+- What happens if you use a sync function in an async context?
+- What is an event loop?
+- When would you use BackgroundTasks in FastAPI?
+- What is the difference between asyncio.sleep() and time.sleep() in FastAPI?
+
+---
+
+SECTION 6: JWT AUTHENTICATION
+-------------------------------
+JWT (JSON Web Token):
+- Compact, self-contained token for securely transmitting information
+- Three parts: Header.Payload.Signature (base64 encoded)
+- Stateless: server doesn't store session — verifies signature
+
+Header:
+  {"alg": "HS256", "typ": "JWT"}
+
+Payload (claims):
+  {"sub": "user123", "exp": 1700000000, "role": "admin"}
+
+Signature:
+  HMACSHA256(base64(header) + "." + base64(payload), secret_key)
+
+JWT in FastAPI:
+  from jose import JWTError, jwt
+  from datetime import datetime, timedelta
+
+  SECRET_KEY = "your-secret-key"
+  ALGORITHM = "HS256"
+
+  def create_access_token(data: dict):
+      to_encode = data.copy()
+      expire = datetime.utcnow() + timedelta(minutes=30)
+      to_encode.update({"exp": expire})
+      return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+  def verify_token(token: str):
+      try:
+          payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+          return payload
+      except JWTError:
+          return None
+
+OAuth2 Password Bearer:
+  from fastapi.security import OAuth2PasswordBearer
+
+  oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+  @app.get("/protected")
+  def protected_route(token: str = Depends(oauth2_scheme)):
+      user = verify_token(token)
+      if not user:
+          raise HTTPException(status_code=401, detail="Invalid token")
+      return {"user": user}
+
+JWT vs Session Auth:
+- JWT: stateless, scalable, good for microservices; tokens can't be invalidated until expiry
+- Session: stateful, stored server-side; easy to invalidate; not scalable without shared session store
+
+Frequently Asked Questions:
+- What is JWT? What are its three parts?
+- How does JWT authentication work in FastAPI?
+- What is the difference between access token and refresh token?
+- What are the security concerns with JWT? → Token theft, no invalidation before expiry
+- What is OAuth2 and how does FastAPI support it?
+
+---
+
+SECTION 7: REST API DESIGN PRINCIPLES
+----------------------------------------
+REST (Representational State Transfer):
+- Stateless: each request contains all needed info
+- Client-Server: separation of concerns
+- Cacheable: responses marked as cacheable or not
+- Uniform Interface: consistent resource-based URLs
+- Layered System: client doesn't know if talking to server or proxy
+
+RESTful URL Design:
+  GET    /users           # list all users
+  POST   /users           # create a user
+  GET    /users/{id}      # get specific user
+  PUT    /users/{id}      # update (full) specific user
+  PATCH  /users/{id}      # partial update
+  DELETE /users/{id}      # delete user
+  GET    /users/{id}/orders   # nested resource
+
+Best Practices:
+- Use nouns, not verbs in URLs: /users not /getUsers
+- Use plural nouns: /users not /user
+- Use HTTP methods for actions: DELETE /users/1 not /users/1/delete
+- Return appropriate status codes
+- Version your API: /api/v1/users
+- Use proper error response format: {"error": "message", "code": 404}
+
+Response Status Codes:
+  200 OK: successful GET, PUT, PATCH
+  201 Created: successful POST (return new resource)
+  204 No Content: successful DELETE
+  400 Bad Request: invalid input
+  401 Unauthorized: missing or invalid authentication
+  403 Forbidden: authenticated but not authorized
+  404 Not Found: resource doesn't exist
+  422 Unprocessable Entity: validation error (FastAPI default for bad input)
+  429 Too Many Requests: rate limit exceeded
+  500 Internal Server Error: unhandled server error
+
+---
+
+SECTION 8: MIDDLEWARE IN FASTAPI
+----------------------------------
+Middleware:
+- Code that runs before and after each request
+- Use cases: logging, CORS, authentication, rate limiting, compression
+
+Adding Middleware:
+  from fastapi.middleware.cors import CORSMiddleware
+
+  app.add_middleware(
+      CORSMiddleware,
+      allow_origins=["*"],
+      allow_methods=["*"],
+      allow_headers=["*"],
+  )
+
+Custom Middleware:
+  from starlette.middleware.base import BaseHTTPMiddleware
+
+  class LoggingMiddleware(BaseHTTPMiddleware):
+      async def dispatch(self, request, call_next):
+          print(f"Request: {request.method} {request.url}")
+          response = await call_next(request)
+          print(f"Response status: {response.status_code}")
+          return response
+
+  app.add_middleware(LoggingMiddleware)
+
+CORS (Cross-Origin Resource Sharing):
+- Browser security mechanism blocking cross-origin requests
+- Backend must explicitly allow frontend origins
+- FastAPI's CORSMiddleware handles this
+
+Frequently Asked Questions:
+- What is middleware?
+- What is CORS and why is it needed?
+- How do you add authentication middleware in FastAPI?
+- What is the order of middleware execution?
+
+---
+
+SECTION 9: ERROR HANDLING IN FASTAPI
+--------------------------------------
+HTTPException:
+  from fastapi import HTTPException
+
+  @app.get("/users/{user_id}")
+  def get_user(user_id: int):
+      user = db.get(user_id)
+      if not user:
+          raise HTTPException(status_code=404, detail="User not found")
+      return user
+
+Custom Exception Handler:
+  from fastapi import Request
+  from fastapi.responses import JSONResponse
+
+  class CustomException(Exception):
+      def __init__(self, message: str):
+          self.message = message
+
+  @app.exception_handler(CustomException)
+  async def custom_exception_handler(request: Request, exc: CustomException):
+      return JSONResponse(status_code=400, content={"error": exc.message})
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+FastAPI interview questions, FastAPI tutorial, FastAPI concepts, Pydantic validation, dependency injection FastAPI, async FastAPI, JWT authentication FastAPI, REST API design, ASGI WSGI, middleware FastAPI, CORS, HTTPException, background tasks, OAuth2 FastAPI, Uvicorn, type hints FastAPI, FastAPI vs Flask vs Django, API versioning, HTTP status codes, route parameters, query parameters, FastAPI backend interview, placement backend questions

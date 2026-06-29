@@ -1,116 +1,271 @@
-Aptitude Preparation for Placement Exams
+APTITUDE PREPARATION FOR PLACEMENT INTERVIEWS
+==============================================
 
-=== Quantitative Aptitude ===
+Topic: Quantitative Aptitude, Logical Reasoning, and Verbal Ability for Campus Placements
 
-1. Number Series:
-Number series questions test your ability to identify patterns.
+---
 
-Types of patterns:
-- Arithmetic progression (constant difference): 2, 5, 8, 11, 14, ... (difference = 3)
-- Geometric progression (constant ratio): 3, 6, 12, 24, 48, ... (ratio = 2)
-- Square series: 1, 4, 9, 16, 25, 36, ... (n^2)
-- Cube series: 1, 8, 27, 64, 125, ... (n^3)
-- Fibonacci-like: 1, 1, 2, 3, 5, 8, 13, ... (sum of previous two)
-- Alternating patterns: 2, 5, 3, 6, 4, 7, ... (two interleaved series)
+OVERVIEW
+--------
+Aptitude tests are the first round in most placement processes — TCS, Infosys, Wipro, Accenture, Cognizant, and other companies use them to shortlist candidates before the technical interview. Scoring well in aptitude requires speed, accuracy, and pattern recognition. This document covers all major aptitude topics with key formulas, tricks, and frequently asked question types.
 
-Practice Question: Find the next number: 2, 6, 12, 20, 30, ?
-Answer: 42 (differences are 4, 6, 8, 10, 12 — increasing by 2)
+---
 
-2. Percentages:
-Key formulas:
-- Percentage = (Part / Whole) × 100
-- Successive percentage changes: If a value changes by a% and then b%, the net change is (a + b + ab/100)%
-- If a price increases by x%, to restore the original price, decrease by (100x)/(100+x)%
+SECTION 1: NUMBER SYSTEM
+-------------------------
+Core Concepts:
+- Natural numbers: 1, 2, 3, ...
+- Whole numbers: 0, 1, 2, ...
+- Integers: ..., -2, -1, 0, 1, 2, ...
+- Rational numbers: numbers expressible as p/q
+- Prime numbers: divisible only by 1 and itself (2, 3, 5, 7, 11, 13 ...)
+- Composite numbers: more than two factors
+- LCM (Least Common Multiple) and HCF (Highest Common Factor)
 
-Practice Question: A product's price increases by 20% and then decreases by 20%. What is the net change?
-Answer: Net change = 20 - 20 - (20×20)/100 = -4%. The price decreases by 4%.
+Key Formulas:
+- LCM × HCF = Product of two numbers
+- Sum of first n natural numbers = n(n+1)/2
+- Sum of squares of first n natural numbers = n(n+1)(2n+1)/6
+- Sum of cubes of first n natural numbers = [n(n+1)/2]²
 
-3. Profit and Loss:
-- Profit% = (Profit / Cost Price) × 100
-- Selling Price = Cost Price + Profit
-- If two items are sold at the same price, one at x% profit and the other at x% loss, there is always a net loss of (x²/100)%.
+Frequently Asked Questions:
+- Find the LCM of 12, 18, 24 → Answer: 72
+- What is the HCF of 48 and 64? → Answer: 16
+- How many prime numbers exist between 1 and 50? → Answer: 15
+- Find the remainder when 2^10 is divided by 7 → Use cyclicity of remainders
 
-4. Time and Work:
-- If A can do a job in 'a' days and B can do it in 'b' days, together they take ab/(a+b) days.
-- If A is twice as efficient as B, and B takes 12 days, A takes 6 days.
-- Pipe and cistern problems follow the same logic with filling and draining rates.
+Tricks:
+- Divisibility by 3: sum of digits divisible by 3
+- Divisibility by 9: sum of digits divisible by 9
+- Divisibility by 11: alternate digit sum difference divisible by 11
+- For last digit patterns: powers of 2 cycle as 2,4,8,6; powers of 3 cycle as 3,9,7,1
 
-Practice Question: A can do a piece of work in 10 days and B can do it in 15 days. In how many days can they do it together?
-Answer: Together = (10 × 15) / (10 + 15) = 150/25 = 6 days.
+---
 
-5. Time, Speed, and Distance:
+SECTION 2: PERCENTAGES
+-----------------------
+Core Concepts:
+- Percentage means per hundred
+- Percentage increase = (Increase / Original) × 100
+- Percentage decrease = (Decrease / Original) × 100
+- If a value increases by x%, to find the original: Multiply by 100/(100+x)
+
+Key Formulas:
+- x% of y = y% of x (useful for mental math)
+- Successive percentage change: if value changes by a% then b%, net change = a + b + ab/100
+
+Frequently Asked Questions:
+- A salary is increased by 20% and then decreased by 20%. Net change? → Loss of 4%
+- 40% of what number is 200? → 500
+- If price increases by 25%, by what % must consumption fall to keep expenditure same? → 20%
+
+Tricks:
+- To calculate 15% quickly: find 10% then add half of that
+- To calculate 12.5%: divide by 8
+- Fraction equivalents: 1/8 = 12.5%, 1/6 = 16.67%, 1/3 = 33.33%
+
+---
+
+SECTION 3: PROFIT AND LOSS
+---------------------------
+Core Concepts:
+- Profit = Selling Price (SP) - Cost Price (CP)
+- Loss = Cost Price (CP) - Selling Price (SP)
+- Profit % = (Profit / CP) × 100
+- Loss % = (Loss / CP) × 100
+
+Key Formulas:
+- SP = CP × (100 + Profit%) / 100
+- CP = SP × 100 / (100 + Profit%)
+- If two items sold at same SP, one at x% profit and one at x% loss → always a net loss of x²/100 %
+- Marked Price (MP) and Discount: SP = MP × (100 - Discount%) / 100
+
+Frequently Asked Questions:
+- An item bought for Rs 800 sold for Rs 1000. Profit %? → 25%
+- A shopkeeper marks up 40% and gives 20% discount. Net profit %? → 12%
+- If CP of 10 pens = SP of 8 pens, find profit % → 25%
+
+---
+
+SECTION 4: TIME, SPEED AND DISTANCE
+-------------------------------------
+Core Concepts:
 - Speed = Distance / Time
-- Average speed for two equal distances at speeds a and b = 2ab/(a+b)
-- Relative speed: same direction = |a-b|, opposite direction = a+b
-- Train problems: add length of train to distance when crossing a platform.
+- Distance = Speed × Time
+- Time = Distance / Speed
+- Convert km/h to m/s: multiply by 5/18
+- Convert m/s to km/h: multiply by 18/5
 
-6. Probability:
-- P(event) = favorable outcomes / total outcomes
+Key Formulas:
+- Relative speed (same direction): |S1 - S2|
+- Relative speed (opposite direction): S1 + S2
+- Average speed for equal distances: 2S1×S2 / (S1+S2) — NOT arithmetic mean
+- Train crossing a pole: time = Length of train / Speed
+- Train crossing a platform: time = (Length of train + Length of platform) / Speed
+
+Frequently Asked Questions:
+- A train 200m long crosses a platform 300m long at 90 km/h. Time? → 20 seconds
+- Two trains start from A and B, 400km apart. Speed 60 and 40 km/h. When do they meet? → After 4 hours
+- A man rows 10 km upstream in 2 hours and downstream in 1 hour. Speed of current? → 2.5 km/h
+
+Boats and Streams:
+- Speed downstream = Speed of boat + Speed of stream
+- Speed upstream = Speed of boat - Speed of stream
+- Speed of boat = (Downstream + Upstream) / 2
+- Speed of stream = (Downstream - Upstream) / 2
+
+---
+
+SECTION 5: TIME AND WORK
+--------------------------
+Core Concepts:
+- If A completes work in n days, A's 1 day work = 1/n
+- Combined work per day = sum of individual daily work rates
+- Work done = Rate × Time
+
+Key Formulas:
+- If A does work in 'a' days and B in 'b' days, together: ab/(a+b) days
+- If A is twice as fast as B, and B takes n days → A takes n/2 days
+- Pipes and cisterns: filling pipe is positive, draining pipe is negative
+
+Frequently Asked Questions:
+- A does a job in 10 days, B in 15 days. Together? → 6 days
+- A pipe fills tank in 6 hours, leak empties in 12 hours. Net fill time? → 12 hours
+- A and B together do work in 6 days. A alone takes 10 days. B alone? → 15 days
+
+---
+
+SECTION 6: PERMUTATION AND COMBINATION
+----------------------------------------
+Core Concepts:
+- Permutation: arrangement (order matters) → nPr = n! / (n-r)!
+- Combination: selection (order doesn't matter) → nCr = n! / r!(n-r)!
+- Fundamental counting principle: if event A has m ways and B has n ways → m × n total
+
+Key Formulas:
+- nC0 = nCn = 1
+- nCr = nC(n-r)
+- nCr + nC(r-1) = (n+1)Cr
+- Circular permutations: (n-1)!
+- Arrangements with repetition: n! / (p! × q! × r!) where p,q,r are repeated elements
+
+Frequently Asked Questions:
+- In how many ways can 5 people sit in a row? → 5! = 120
+- In how many ways can a committee of 3 be chosen from 8 people? → 8C3 = 56
+- How many 3-digit numbers can be formed from digits 1-5 without repetition? → 5×4×3 = 60
+- In how many ways can the letters of MISSISSIPPI be arranged? → 11!/(4!×4!×2!) = 34650
+
+---
+
+SECTION 7: PROBABILITY
+------------------------
+Core Concepts:
+- Probability = Favorable outcomes / Total outcomes
+- P(A) is between 0 and 1
+- P(A) + P(not A) = 1
+- Mutually exclusive events: P(A or B) = P(A) + P(B)
+- Independent events: P(A and B) = P(A) × P(B)
+
+Key Formulas:
 - P(A or B) = P(A) + P(B) - P(A and B)
-- P(A and B) = P(A) × P(B) if independent
-- Complementary: P(not A) = 1 - P(A)
+- Conditional probability: P(A|B) = P(A and B) / P(B)
 
-Practice Question: Two dice are thrown. What is the probability that the sum is 7?
-Answer: Favorable outcomes = {(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)} = 6. Total = 36. P = 6/36 = 1/6.
+Frequently Asked Questions:
+- A bag has 3 red, 4 blue balls. Probability of picking red? → 3/7
+- Two dice rolled. Probability sum = 8? → 5/36
+- Cards: probability of getting a king or a heart? → 4/52 + 13/52 - 1/52 = 16/52
 
-7. Permutations and Combinations:
-- nPr = n! / (n-r)! (order matters)
-- nCr = n! / (r! × (n-r)!) (order doesn't matter)
-- Circular permutation = (n-1)!
+---
 
-=== Logical Reasoning ===
+SECTION 8: NUMBER SERIES
+--------------------------
+Types of Series:
+- Arithmetic progression (AP): common difference is constant → 2, 5, 8, 11 (d=3)
+- Geometric progression (GP): common ratio is constant → 2, 6, 18, 54 (r=3)
+- Difference series: differences between consecutive terms form a pattern
+- Square/cube series: terms are perfect squares or cubes
+- Mixed/alternating series: two interlaced series
 
-1. Coding-Decoding:
-- Letter shifting: Each letter shifted by a fixed number (A→D, B→E means shift of +3)
-- Reverse order coding: WORD → DROW
-- Number coding: A=1, B=2, ..., Z=26
+AP Formulas:
+- nth term = a + (n-1)d
+- Sum of n terms = n/2 × [2a + (n-1)d]
 
-2. Blood Relations:
-Key terms to remember:
-- Father's or Mother's son = Brother
-- Father's or Mother's daughter = Sister
-- Father's father = Grandfather
-- Mother's brother = Maternal Uncle
-- Father's sister = Aunt (Bua)
+GP Formulas:
+- nth term = a × r^(n-1)
+- Sum of n terms = a(r^n - 1) / (r-1)
 
-3. Seating Arrangement:
-- Linear arrangement: People in a row facing a direction.
-- Circular arrangement: People around a table.
-- Draw diagrams to solve these problems.
+Frequently Asked Questions:
+- Find next term: 2, 6, 12, 20, 30, ? → 42 (differences: 4,6,8,10,12)
+- Find missing: 1, 4, 9, 16, ?, 36 → 25 (perfect squares)
+- Find next: 3, 6, 12, 24, ? → 48 (GP, r=2)
 
-4. Syllogisms:
-Use Venn diagrams to solve.
-All A are B. Some B are C.
-Conclusion: Some C are A — may or may not be true.
+---
 
-5. Direction Sense:
-- Start from a point and track movements.
-- Remember: turning right from North = East, turning left from North = West.
+SECTION 9: LOGICAL REASONING
+------------------------------
+Topics Covered:
+- Blood relations
+- Directions and distances
+- Coding-decoding
+- Syllogisms
+- Seating arrangements
+- Data sufficiency
+- Clocks and calendars
 
-=== Verbal Ability ===
+Blood Relations Quick Tips:
+- Map family tree carefully before answering
+- Common trick: "Son of my father's only son" = your own son
 
-1. Reading Comprehension:
-- Read the passage carefully before answering.
-- Focus on main idea, tone, and inference questions.
-- Eliminate obviously wrong answers first.
+Direction Sense:
+- Always face North initially unless stated
+- Turns: Left turn = counterclockwise, Right turn = clockwise
 
-2. Sentence Correction:
-Common errors: subject-verb agreement, tense consistency, pronoun reference, parallelism, dangling modifiers.
+Coding-Decoding:
+- Letter position coding: A=1, B=2, ..., Z=26
+- Reverse alphabet: A=26, Z=1
+- Pattern: shift each letter by a fixed number
 
-3. Vocabulary:
-High-frequency words for placement exams:
-- Ubiquitous: present everywhere
-- Pragmatic: practical, realistic
-- Ephemeral: short-lived
-- Ambiguous: having multiple meanings
-- Meticulous: very careful and precise
+Clocks:
+- Minute hand moves 360° in 60 min → 6° per minute
+- Hour hand moves 360° in 12 hours → 0.5° per minute
+- Angle between hands at H hours M minutes = |30H - 5.5M|
 
-=== Aptitude Preparation Strategy ===
+---
 
-1. Practice daily — solve at least 20 problems per day.
-2. Focus on weak areas — identify and improve.
-3. Time yourself — most exams have strict time limits.
-4. Learn shortcuts — for example, Vedic math for multiplication.
-5. Take mock tests — simulate real exam conditions.
-6. Review mistakes — understand why you got a problem wrong.
-7. Focus on high-weightage topics: Number series, percentages, and time & work appear frequently.
+SECTION 10: PLACEMENT APTITUDE STRATEGY
+-----------------------------------------
+Time Management:
+- Most aptitude tests: 60-90 minutes for 60-90 questions
+- Target: 1 minute per question maximum
+- Skip and return strategy: don't get stuck on one question
+
+Section-wise Approach:
+- Quantitative: focus on speed using shortcuts
+- Logical: read carefully, don't overthink
+- Verbal: read passages quickly, focus on tone and inference
+
+Common Company Patterns:
+- TCS NQT: Numerical Ability, Verbal Ability, Reasoning, Coding (2 questions)
+- Infosys: Puzzle solving, Data Interpretation, Sentence Completion
+- Wipro NLTH: Aptitude + Essay Writing
+- Accenture: Cognitive Assessment + Coding
+
+Preparation Tips:
+- Practice at least 20 mock tests before the actual exam
+- Review wrong answers thoroughly — identify the pattern of mistakes
+- Learn at least 5 shortcut tricks per topic
+- Time yourself during practice — accuracy under pressure matters
+- Revise fraction-percentage-decimal equivalents until they are automatic
+
+Important Formulas to Memorize:
+- Simple Interest: SI = PRT/100
+- Compound Interest: CI = P(1 + R/100)^T - P
+- Area of circle: πr²
+- Volume of cylinder: πr²h
+- Pythagoras: a² + b² = c²
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+aptitude test, quantitative aptitude, placement aptitude, number system, percentages, profit loss, time speed distance, time and work, permutation combination, probability, number series, logical reasoning, verbal ability, TCS aptitude, Infosys aptitude, campus placement test, aptitude tricks, aptitude shortcuts, aptitude preparation, aptitude questions for placement

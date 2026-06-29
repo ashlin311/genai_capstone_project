@@ -1,0 +1,349 @@
+DATA STRUCTURES AND ALGORITHMS (DSA) INTERVIEW PREPARATION
+===========================================================
+
+Topic: Arrays, Strings, Linked Lists, Trees, Graphs, Dynamic Programming, and Common Coding Patterns for Technical Interviews
+
+---
+
+OVERVIEW
+--------
+DSA is the core of every technical interview. Whether you are applying to a product company (Google, Amazon, Microsoft) or a service company (TCS, Infosys, Wipro), you will face coding questions. The goal is not to memorize solutions — it is to recognize problem patterns and apply the right approach confidently. This document covers every major DSA topic with explanation, common questions, and patterns.
+
+---
+
+SECTION 1: ARRAYS
+------------------
+Core Concepts:
+- Fixed size, contiguous memory, O(1) access by index
+- Insertion at end: O(1) amortized; insertion at middle: O(n)
+- Deletion: O(n) in worst case due to shifting
+- Two-pointer technique: useful for sorted arrays, pair sum, palindrome
+- Sliding window: useful for subarray problems with constraint
+
+Common Patterns:
+- Prefix sum: pre-compute cumulative sums for range queries
+- Kadane's algorithm: maximum subarray sum in O(n)
+- Dutch National Flag: sort array of 0s, 1s, 2s in O(n), O(1) space
+
+Frequently Asked Questions:
+- Find the maximum subarray sum (Kadane's algorithm)
+- Two Sum: find two numbers that add up to a target
+- Move all zeros to the end without changing relative order of others
+- Find the missing number in array 1 to n: use sum formula n(n+1)/2
+- Rotate array by k positions
+- Find duplicate in array of n+1 elements (Floyd's cycle detection)
+- Merge two sorted arrays without extra space
+- Find the majority element (Boyer-Moore voting algorithm)
+
+Key Algorithms:
+Kadane's Algorithm:
+  max_sum = arr[0]
+  current_sum = arr[0]
+  for each element from index 1:
+    current_sum = max(element, current_sum + element)
+    max_sum = max(max_sum, current_sum)
+
+Two Pointer for Pair Sum (sorted array):
+  left = 0, right = n-1
+  while left < right:
+    if arr[left] + arr[right] == target: found
+    elif sum < target: left++
+    else: right--
+
+---
+
+SECTION 2: STRINGS
+-------------------
+Core Concepts:
+- Strings are arrays of characters
+- String manipulation: substring, reverse, split, join
+- ASCII values: 'a' = 97, 'A' = 65, '0' = 48
+- Anagram check: sort both strings or use character frequency map
+
+Frequently Asked Questions:
+- Check if two strings are anagrams
+- Find the longest palindromic substring
+- Reverse words in a string
+- Check if a string is a palindrome
+- Find the first non-repeating character
+- Longest common prefix among an array of strings
+- String compression: "aaabbc" → "a3b2c1"
+- Count occurrences of a pattern in a text (KMP algorithm)
+- Valid parentheses using stack
+
+Key Techniques:
+- Sliding window for longest substring without repeating characters
+- HashMap for character frequency counting
+- Two pointers for palindrome checking
+
+Palindrome Check with Two Pointers:
+  left = 0, right = len-1
+  while left < right:
+    if s[left] != s[right]: not palindrome
+    left++, right--
+
+---
+
+SECTION 3: LINKED LIST
+-----------------------
+Core Concepts:
+- Nodes connected via pointers; no random access
+- Singly linked list: each node points to next
+- Doubly linked list: each node points to both next and previous
+- Insertion/deletion at head: O(1); at tail or middle: O(n)
+
+Frequently Asked Questions:
+- Reverse a linked list (iterative and recursive)
+- Detect a cycle in linked list (Floyd's cycle detection: slow and fast pointers)
+- Find the middle of a linked list (slow and fast pointer)
+- Merge two sorted linked lists
+- Remove nth node from the end
+- Check if linked list is a palindrome
+- Flatten a multilevel linked list
+- Clone a linked list with random pointers
+
+Cycle Detection (Floyd's Algorithm):
+  slow = head, fast = head
+  while fast and fast.next:
+    slow = slow.next
+    fast = fast.next.next
+    if slow == fast: cycle exists
+
+Reverse Linked List (Iterative):
+  prev = None, current = head
+  while current:
+    next_node = current.next
+    current.next = prev
+    prev = current
+    current = next_node
+  head = prev
+
+---
+
+SECTION 4: STACK AND QUEUE
+----------------------------
+Stack (LIFO — Last In First Out):
+- Operations: push, pop, peek — all O(1)
+- Implementation: array or linked list
+- Use cases: function call stack, undo operations, expression evaluation, balanced parentheses
+
+Queue (FIFO — First In First Out):
+- Operations: enqueue, dequeue — O(1) with linked list
+- Use cases: BFS, scheduling, printer queue
+- Deque (double-ended queue): insert/delete from both ends
+
+Frequently Asked Questions:
+- Implement a stack using two queues
+- Implement a queue using two stacks
+- Valid parentheses: check if brackets are balanced
+- Next greater element using stack
+- Min stack: stack that supports push, pop, and getMin in O(1)
+- Evaluate postfix expression
+- Stock span problem
+
+Valid Parentheses:
+  stack = []
+  for char in string:
+    if char is opening bracket: push
+    if char is closing bracket:
+      if stack empty or top doesn't match: invalid
+      else: pop
+  return stack is empty
+
+---
+
+SECTION 5: TREES
+-----------------
+Core Concepts:
+- Binary Tree: each node has at most 2 children
+- Binary Search Tree (BST): left < root < right
+- Height of tree: longest path from root to leaf
+- Complete binary tree: all levels filled except possibly last
+- Balanced BST: height difference of left and right subtrees ≤ 1
+
+Traversals:
+- Inorder (Left-Root-Right): gives sorted order in BST
+- Preorder (Root-Left-Right): used for tree copy
+- Postorder (Left-Right-Root): used for tree deletion
+- Level order (BFS): level by level using queue
+
+Frequently Asked Questions:
+- Height of a binary tree
+- Check if a binary tree is balanced
+- Lowest Common Ancestor (LCA) of two nodes
+- Level order traversal
+- Right side view of binary tree
+- Diameter of a binary tree
+- Convert sorted array to balanced BST
+- Serialize and deserialize a binary tree
+- Check if two trees are identical
+- Path sum: check if root-to-leaf path has given sum
+
+BST Operations:
+- Search: O(log n) average, O(n) worst case (skewed tree)
+- Insert: O(log n) average
+- Delete: O(log n) average
+
+Inorder Traversal (Recursive):
+  def inorder(node):
+    if node is None: return
+    inorder(node.left)
+    process(node)
+    inorder(node.right)
+
+---
+
+SECTION 6: GRAPHS
+------------------
+Core Concepts:
+- Graph: set of vertices (V) and edges (E)
+- Directed graph: edges have direction
+- Undirected graph: edges are bidirectional
+- Weighted graph: edges have weights
+- Representations: adjacency matrix (O(V²) space), adjacency list (O(V+E) space)
+
+Graph Traversals:
+BFS (Breadth First Search):
+  - Uses queue
+  - Explores level by level
+  - Finds shortest path in unweighted graph
+  - Time: O(V+E)
+
+DFS (Depth First Search):
+  - Uses stack (or recursion)
+  - Explores as deep as possible before backtracking
+  - Used for cycle detection, topological sort, connected components
+  - Time: O(V+E)
+
+Frequently Asked Questions:
+- BFS and DFS implementation
+- Detect cycle in directed graph (DFS with visited and recursion stack)
+- Detect cycle in undirected graph (Union-Find or DFS with parent tracking)
+- Topological sort (Kahn's algorithm or DFS-based)
+- Shortest path: Dijkstra's algorithm (weighted, no negative edges)
+- Minimum spanning tree: Prim's or Kruskal's
+- Number of connected components
+- Island problem: count islands in a 2D grid (DFS/BFS)
+- Bipartite graph check
+
+BFS Template:
+  queue = [start]
+  visited = {start}
+  while queue:
+    node = queue.pop(0)
+    process(node)
+    for neighbor in graph[node]:
+      if neighbor not in visited:
+        visited.add(neighbor)
+        queue.append(neighbor)
+
+---
+
+SECTION 7: DYNAMIC PROGRAMMING
+--------------------------------
+Core Concepts:
+- DP = recursion + memoization, or iterative tabulation
+- Optimal substructure: solution to big problem depends on solutions to subproblems
+- Overlapping subproblems: same subproblems solved multiple times
+- Approach: define state → write recurrence → implement top-down or bottom-up
+
+Classic DP Problems:
+- Fibonacci (base case for learning DP)
+- 0/1 Knapsack
+- Longest Common Subsequence (LCS)
+- Longest Increasing Subsequence (LIS)
+- Edit Distance (Levenshtein)
+- Coin Change (minimum coins)
+- Subset Sum
+- Matrix Chain Multiplication
+- Rod Cutting
+- Egg Drop Problem
+
+Frequently Asked Questions:
+- Climbing stairs: n steps, can take 1 or 2 at a time — how many ways? → Fibonacci pattern
+- Minimum cost path in a grid
+- Longest palindromic subsequence
+- Maximum profit from stock prices (buy/sell)
+- Word break problem: can string be segmented into dictionary words?
+
+Knapsack Pattern:
+  dp[i][w] = max value using first i items with capacity w
+  if weight[i] > w: dp[i][w] = dp[i-1][w]
+  else: dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i])
+
+---
+
+SECTION 8: SORTING AND SEARCHING
+----------------------------------
+Sorting Algorithms:
+- Bubble Sort: O(n²) — educational only
+- Selection Sort: O(n²) — educational only
+- Insertion Sort: O(n²) average, O(n) best (nearly sorted)
+- Merge Sort: O(n log n) always, O(n) space — stable
+- Quick Sort: O(n log n) average, O(n²) worst — in-place
+- Heap Sort: O(n log n) always, O(1) space — unstable
+- Counting Sort: O(n+k) — for integer data with limited range
+- Radix Sort: O(nk) — for integers, digit by digit
+
+Binary Search:
+- Only works on sorted arrays
+- Time: O(log n)
+- Template:
+  left = 0, right = n-1
+  while left <= right:
+    mid = (left + right) // 2
+    if arr[mid] == target: found
+    elif arr[mid] < target: left = mid + 1
+    else: right = mid - 1
+
+Binary Search Variants:
+- Find first occurrence of element
+- Find last occurrence of element
+- Find element in rotated sorted array
+- Search in 2D matrix
+
+---
+
+SECTION 9: COMMON INTERVIEW PATTERNS
+--------------------------------------
+Pattern Recognition is the key to solving problems you have never seen before.
+
+1. Sliding Window → subarray/substring with constraint
+2. Two Pointers → sorted array pair problems, palindrome
+3. Fast and Slow Pointers → cycle detection, middle of list
+4. Merge Intervals → overlapping intervals problems
+5. BFS/Level Order → shortest path, level-by-level tree problems
+6. DFS/Backtracking → permutations, combinations, maze problems
+7. Binary Search → sorted array search, search space problems
+8. Heap (Priority Queue) → top-k elements, kth largest
+9. HashMap/HashSet → frequency count, duplicate detection, two sum
+10. DP → optimization problems, count problems with choices
+
+---
+
+SECTION 10: COMPLEXITY ANALYSIS
+---------------------------------
+Time Complexity:
+- O(1): constant — hash table lookup
+- O(log n): logarithmic — binary search
+- O(n): linear — single loop
+- O(n log n): linearithmic — merge sort, heap sort
+- O(n²): quadratic — nested loops, bubble sort
+- O(2^n): exponential — recursive subset generation
+- O(n!): factorial — permutation generation
+
+Space Complexity:
+- Auxiliary space: extra space used by algorithm (not input)
+- Recursion stack space counts as space complexity
+- In-place algorithms: O(1) auxiliary space
+
+Big O Rules:
+- Drop constants: O(2n) → O(n)
+- Drop non-dominant terms: O(n² + n) → O(n²)
+- Different variables for different inputs: O(n + m), not O(n)
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+DSA interview, data structures, algorithms, array questions, string manipulation, linked list, stack queue, binary tree, BST, graph traversal, BFS, DFS, dynamic programming, knapsack, LCS, sorting algorithms, binary search, two pointer, sliding window, time complexity, space complexity, Big O, coding interview, technical interview, placement coding round, competitive programming

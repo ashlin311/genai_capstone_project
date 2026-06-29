@@ -1,0 +1,293 @@
+OBJECT-ORIENTED PROGRAMMING (OOP) — INTERVIEW PREPARATION
+==========================================================
+
+Topic: Encapsulation, Abstraction, Inheritance, Polymorphism, Interfaces, Design Principles, and OOP Interview Questions
+
+---
+
+OVERVIEW
+--------
+Object-Oriented Programming (OOP) is asked in virtually every software engineering interview. Questions test both conceptual understanding and ability to apply OOP principles in code. This document covers all four pillars of OOP, advanced concepts like interfaces vs abstract classes, design principles (SOLID), and common interview questions with examples in Python and Java.
+
+---
+
+SECTION 1: THE FOUR PILLARS OF OOP
+------------------------------------
+
+1. ENCAPSULATION
+-----------------
+Definition: Bundling data (attributes) and methods (functions) that operate on that data within a single unit (class), and restricting direct access to some components.
+
+Purpose:
+- Protects internal state from unintended modification
+- Hides implementation details (information hiding)
+- Provides controlled access via getters and setters
+
+Example in Python:
+  class BankAccount:
+      def __init__(self, balance):
+          self.__balance = balance  # private attribute
+
+      def get_balance(self):       # getter
+          return self.__balance
+
+      def deposit(self, amount):   # controlled modification
+          if amount > 0:
+              self.__balance += amount
+
+Access Modifiers:
+- Public: accessible from anywhere
+- Private: accessible only within the class (__ in Python, private in Java)
+- Protected: accessible within class and subclasses (_ in Python, protected in Java)
+
+Key Interview Points:
+- Encapsulation ≠ just using private. It is about controlling access to internal state.
+- Getters/setters allow validation before modifying data.
+
+2. ABSTRACTION
+---------------
+Definition: Hiding complex implementation details and showing only the essential features to the user.
+
+Purpose:
+- Reduces complexity for the user
+- Focus on WHAT an object does, not HOW it does it
+
+Example: When you drive a car, you use the steering wheel and pedals (abstract interface). You don't need to know the internal combustion mechanics (implementation hidden).
+
+In Code — Abstract Class in Python:
+  from abc import ABC, abstractmethod
+
+  class Shape(ABC):
+      @abstractmethod
+      def area(self):
+          pass
+
+  class Circle(Shape):
+      def __init__(self, r):
+          self.r = r
+      def area(self):
+          return 3.14 * self.r * self.r
+
+Abstraction vs Encapsulation:
+- Abstraction: design principle — hiding complexity at the design level
+- Encapsulation: implementation technique — hiding internal state using access control
+- Abstraction hides WHAT; Encapsulation hides HOW
+
+3. INHERITANCE
+---------------
+Definition: A class (child/subclass) inherits properties and behaviors from another class (parent/superclass).
+
+Types of Inheritance:
+- Single: one child inherits from one parent
+- Multiple: one child inherits from multiple parents (supported in Python, not directly in Java)
+- Multilevel: A → B → C (chain of inheritance)
+- Hierarchical: multiple children inherit from one parent
+- Hybrid: combination of multiple types
+
+Example in Python:
+  class Animal:
+      def speak(self):
+          return "Some sound"
+
+  class Dog(Animal):
+      def speak(self):          # overrides parent method
+          return "Woof"
+
+  class GuideDog(Dog):          # multilevel inheritance
+      def guide(self):
+          return "Guiding..."
+
+IS-A vs HAS-A relationship:
+- Inheritance models IS-A: Dog IS-A Animal
+- Composition models HAS-A: Car HAS-A Engine
+
+super() keyword:
+- Calls parent class constructor or method
+- Used when you want to extend parent behavior, not replace it
+
+Method Resolution Order (MRO) in Python:
+- Python uses C3 linearization for multiple inheritance
+- Check with ClassName.__mro__
+
+Problems with Inheritance:
+- Tight coupling: changes in parent affect all children
+- Diamond problem in multiple inheritance
+- Prefer composition over inheritance when possible
+
+4. POLYMORPHISM
+----------------
+Definition: "Many forms" — same interface, different behavior depending on the object.
+
+Types:
+
+Compile-time Polymorphism (Static / Method Overloading):
+- Same method name, different parameters
+- Python doesn't support traditional overloading (use default args instead)
+- Java supports it: add(int a, int b) vs add(double a, double b)
+
+Runtime Polymorphism (Dynamic / Method Overriding):
+- Child class provides specific implementation of a parent class method
+- Decided at runtime which method to call
+- Requires inheritance
+
+Example:
+  class Shape:
+      def area(self):
+          pass
+
+  class Circle(Shape):
+      def area(self):
+          return 3.14 * r * r
+
+  class Square(Shape):
+      def area(self):
+          return side * side
+
+  shapes = [Circle(5), Square(4)]
+  for s in shapes:
+      print(s.area())   # calls correct method at runtime
+
+Duck Typing (Python-specific polymorphism):
+- "If it walks like a duck and quacks like a duck, it's a duck"
+- Python uses this instead of strict type checking
+
+---
+
+SECTION 2: INTERFACE VS ABSTRACT CLASS
+----------------------------------------
+Abstract Class:
+- Can have both abstract methods (no body) and concrete methods (with body)
+- Can have constructor
+- Can have instance variables
+- A class can inherit only one abstract class (in Java)
+- Use when classes share common behavior
+
+Interface (Java concept):
+- All methods are abstract by default (in Java 7 and earlier)
+- No constructor, no instance variables (only constants)
+- A class can implement multiple interfaces
+- Use when classes from different hierarchies need to share a contract
+
+Python equivalent:
+- Python has no interface keyword; use Abstract Base Classes (ABC)
+- Duck typing reduces the need for strict interfaces
+
+When to use which:
+- Use abstract class: when you want to share code among related classes
+- Use interface: when you want unrelated classes to share a contract
+
+Example:
+  # Abstract class — shared behavior
+  class Vehicle(ABC):
+      def __init__(self, speed):
+          self.speed = speed   # shared attribute
+
+      @abstractmethod
+      def fuel_type(self):
+          pass
+
+  # Interface equivalent in Python — pure contract
+  class Flyable(ABC):
+      @abstractmethod
+      def fly(self):
+          pass
+
+---
+
+SECTION 3: SOLID PRINCIPLES
+-----------------------------
+SOLID is a set of five design principles for maintainable OOP code.
+
+S — Single Responsibility Principle (SRP):
+- A class should have only one reason to change
+- One class = one responsibility
+- Bad: User class that handles both user data AND sending emails
+- Good: User class for data; EmailService class for emails
+
+O — Open/Closed Principle (OCP):
+- Classes should be open for extension, closed for modification
+- Add new behavior through inheritance/composition, not by editing existing code
+- Example: instead of adding if-else for each new shape, use inheritance
+
+L — Liskov Substitution Principle (LSP):
+- Subtypes must be substitutable for their base types without altering correctness
+- If class S is a subtype of class T, you should be able to use S wherever T is expected
+- Violation: Square inheriting from Rectangle can break area calculation if width/height set independently
+
+I — Interface Segregation Principle (ISP):
+- No client should be forced to depend on methods it does not use
+- Split large interfaces into smaller, specific ones
+- Bad: one fat interface with 10 methods that not every class needs
+- Good: multiple small interfaces, classes implement only what they need
+
+D — Dependency Inversion Principle (DIP):
+- High-level modules should not depend on low-level modules; both should depend on abstractions
+- Depend on interfaces/abstract classes, not concrete implementations
+- Example: EmailNotifier should depend on Notifier interface, not a specific email library
+
+---
+
+SECTION 4: OTHER OOP CONCEPTS
+-------------------------------
+Constructor:
+- Special method called when an object is created
+- Initializes the object's state
+- Python: __init__(self), Java: same name as class
+
+Destructor:
+- Called when object is destroyed
+- Python: __del__(self)
+
+Method Types:
+- Instance method: operates on instance data (takes self)
+- Class method: operates on class data (@classmethod, takes cls)
+- Static method: doesn't depend on instance or class data (@staticmethod)
+
+Composition vs Inheritance:
+- Composition: HAS-A relationship (Car HAS-A Engine)
+- Prefer composition over inheritance for flexibility
+- Inheritance creates tight coupling; composition is more flexible
+
+Overloading vs Overriding:
+- Overloading: same method name, different parameters, same class (compile-time)
+- Overriding: same method name and parameters, different class (runtime, requires inheritance)
+
+Object vs Class vs Instance:
+- Class: blueprint
+- Object: general term for an instance
+- Instance: a specific realization of a class in memory
+
+---
+
+SECTION 5: COMMON OOP INTERVIEW QUESTIONS
+-------------------------------------------
+Conceptual Questions:
+- What are the four pillars of OOP?
+- What is the difference between abstraction and encapsulation?
+- What is polymorphism? How is it achieved?
+- What is the difference between method overloading and overriding?
+- What is an abstract class? Can it be instantiated?
+- What is the difference between interface and abstract class?
+- What is multiple inheritance? What is the diamond problem?
+- What is constructor overloading?
+- What is a copy constructor?
+- What is the difference between IS-A and HAS-A relationship?
+
+Design Questions:
+- Design a parking lot using OOP
+- Design a library management system using OOP
+- Design a bank system with different account types using inheritance
+- When would you prefer composition over inheritance?
+
+Python-Specific Questions:
+- What are dunder/magic methods in Python? → __init__, __str__, __repr__, __len__, __eq__
+- What is __str__ vs __repr__?
+- What is the difference between @classmethod and @staticmethod?
+- How is data hiding implemented in Python? → Name mangling with __variable
+- What is MRO (Method Resolution Order)?
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+OOP interview questions, object-oriented programming, encapsulation, abstraction, inheritance, polymorphism, interface vs abstract class, SOLID principles, method overriding, method overloading, constructor, destructor, composition vs inheritance, duck typing, Python OOP, Java OOP, design principles, IS-A HAS-A, multiple inheritance, diamond problem, abstract class, access modifiers, getter setter

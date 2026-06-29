@@ -1,0 +1,382 @@
+GENERATIVE AI, RAG, AND LLM — INTERVIEW PREPARATION
+=====================================================
+
+Topic: Large Language Models, Transformers, Attention, Embeddings, RAG, Vector Databases, Prompt Engineering, and AI Interview Questions
+
+---
+
+OVERVIEW
+--------
+Generative AI and LLM knowledge is rapidly becoming essential in placement interviews for AI engineering, MLOps, and software engineering roles. Companies like Google, Microsoft, and AI startups, as well as traditional IT firms adding AI capabilities, ask about transformers, embeddings, RAG pipelines, prompt engineering, and hallucination mitigation. This document covers the full spectrum.
+
+---
+
+SECTION 1: LARGE LANGUAGE MODELS (LLMs)
+-----------------------------------------
+What is an LLM:
+- A deep learning model trained on massive text corpora to understand and generate human language
+- Based on the Transformer architecture
+- Can perform: text generation, summarization, translation, Q&A, code generation, reasoning
+- Examples: GPT-4, Claude, Gemini, LLaMA, Mistral, Falcon
+
+How LLMs Work (High Level):
+1. Input text is tokenized into tokens
+2. Tokens are converted to embeddings
+3. Transformer processes embeddings through attention layers
+4. Output is a probability distribution over next token
+5. Token is sampled and appended; process repeats
+
+Training Phases:
+- Pre-training: trained on large text corpus to predict next token (self-supervised)
+- Fine-tuning: adapted on specific task-labeled data
+- RLHF (Reinforcement Learning from Human Feedback): aligned to human preferences via reward model
+
+Model Size and Parameters:
+- Parameters = learnable weights in the model
+- GPT-3: 175 billion parameters
+- Larger models generally better but require more compute
+- Trade-off: model size vs inference speed vs cost
+
+Tokens:
+- LLMs don't process characters or words; they process tokens
+- A token is roughly 4 characters or 3/4 of a word in English
+- 1000 tokens ≈ 750 words
+- Context window: maximum number of tokens the model can process at once
+
+Frequently Asked Questions:
+- What is a large language model?
+- How does an LLM generate text?
+- What is the difference between GPT, BERT, and T5?
+  - GPT: decoder-only, generative (predicts next token)
+  - BERT: encoder-only, bidirectional (good for classification, embeddings)
+  - T5: encoder-decoder (good for seq-to-seq tasks like translation)
+- What is a token? How many tokens is one word approximately?
+- What is a context window?
+
+---
+
+SECTION 2: TRANSFORMER ARCHITECTURE
+--------------------------------------
+The Transformer was introduced in the paper "Attention is All You Need" (Vaswani et al., 2017).
+
+Key Components:
+
+1. Input Embedding:
+   - Converts token IDs to dense vector representations
+   - Learned during training
+
+2. Positional Encoding:
+   - Adds information about token position in the sequence
+   - Transformer has no inherent sense of order — positional encoding provides it
+   - Sinusoidal encoding (original paper) or learned positional embeddings
+
+3. Multi-Head Attention:
+   - Core innovation of the Transformer
+   - Allows model to focus on different parts of the input simultaneously
+   - Multiple attention heads capture different types of relationships
+   - Self-attention: each token attends to all other tokens in the sequence
+
+4. Feed-Forward Network:
+   - Applied to each position independently after attention
+   - Two linear layers with ReLU/GELU activation
+
+5. Layer Normalization and Residual Connections:
+   - Stabilize training
+   - Residual: output = layer_output + input (avoids vanishing gradients)
+
+6. Encoder vs Decoder:
+   - Encoder: processes input, builds contextual representations (BERT-style)
+   - Decoder: generates output autoregressively (GPT-style)
+   - Cross-attention in decoder: attends to encoder output
+
+Frequently Asked Questions:
+- What is the Transformer architecture?
+- What problem did Transformers solve that RNNs couldn't? → Parallelism, long-range dependencies
+- What is the role of positional encoding?
+- What is multi-head attention?
+- What is the difference between encoder-only and decoder-only transformers?
+
+---
+
+SECTION 3: ATTENTION MECHANISM
+--------------------------------
+Attention Formula:
+  Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) × V
+
+Where:
+- Q (Query): what we are looking for
+- K (Key): what each token offers
+- V (Value): the actual content to return
+- d_k: dimension of key vectors (scaling prevents vanishing gradients from large dot products)
+
+Intuition:
+- Query: the question "what information do I need?"
+- Key: the label "what information do I have?"
+- Value: the content "here is my information"
+- Attention score: how much to attend to each position
+
+Self-Attention:
+- Q, K, V all come from the same sequence
+- Each token computes its relationship with every other token
+- Time complexity: O(n²) where n is sequence length
+
+Cross-Attention (in decoder):
+- Q from decoder, K and V from encoder
+- Decoder attends to encoder's representations
+
+Multi-Head Attention:
+- Run attention h times with different learned projections
+- Concatenate results and project
+- Each head captures different relationship types
+
+Frequently Asked Questions:
+- What is self-attention?
+- Why do we scale by sqrt(d_k)?
+- What is the time complexity of attention? → O(n²) — main bottleneck for long sequences
+- What is the difference between self-attention and cross-attention?
+- What are attention heads and why use multiple?
+
+---
+
+SECTION 4: EMBEDDINGS
+-----------------------
+What are Embeddings:
+- Dense vector representations of text, images, or other data
+- Similar items are close in vector space (measured by cosine similarity or dot product)
+- Dimensionality: typically 384, 768, or 1536 dimensions
+
+Types of Embeddings:
+- Word embeddings: Word2Vec, GloVe — represent individual words
+- Sentence embeddings: Sentence-BERT — represent full sentences/paragraphs
+- Document embeddings: represent entire documents
+
+Sentence Transformers:
+- Pretrained models that generate semantically meaningful sentence embeddings
+- Popular models: all-MiniLM-L6-v2 (fast, 384-dim), all-mpnet-base-v2 (more accurate, 768-dim)
+- Used in RAG, semantic search, clustering
+
+  from sentence_transformers import SentenceTransformer
+  model = SentenceTransformer("all-MiniLM-L6-v2")
+  embeddings = model.encode(["Hello world", "Hi there"])
+
+Similarity Measures:
+- Cosine Similarity: measures angle between vectors; 1 = identical, 0 = unrelated, -1 = opposite
+  cos_sim = dot(A, B) / (|A| × |B|)
+- Dot Product: similar to cosine for normalized vectors
+- Euclidean Distance: absolute distance between vectors
+
+Frequently Asked Questions:
+- What is an embedding? Why are they used?
+- What is the difference between word embeddings and sentence embeddings?
+- What is cosine similarity?
+- Why is all-MiniLM-L6-v2 a good choice for RAG?
+- What is semantic similarity vs keyword matching?
+
+---
+
+SECTION 5: RETRIEVAL-AUGMENTED GENERATION (RAG)
+-------------------------------------------------
+What is RAG:
+- A technique that enhances LLM responses by retrieving relevant documents from a knowledge base and including them in the prompt
+- Solves the knowledge cutoff problem (LLMs have static training data)
+- Reduces hallucination by grounding answers in retrieved documents
+- Makes LLMs domain-specific without retraining
+
+RAG Pipeline:
+
+Offline (Indexing Phase):
+  Documents → Chunking → Embedding → Vector Store (FAISS/Chroma/Pinecone)
+
+Online (Query Phase):
+  User Query → Query Embedding → Vector Store Similarity Search → Top-K Chunks → LLM Prompt → Answer
+
+RAG vs Fine-Tuning:
+- RAG: external knowledge, no retraining needed, up-to-date, interpretable sources
+- Fine-tuning: knowledge baked into weights, no retrieval needed, but expensive and static
+- Use RAG when: knowledge changes frequently; need source attribution; domain-specific Q&A
+
+Chunking Strategies:
+- Fixed size: split every N characters/words (simple, fast)
+- Sentence-based: split on sentence boundaries (preserves meaning)
+- Semantic chunking: split when topic changes significantly
+- Recursive character splitting: try different separators in priority order
+
+Chunk Size Trade-offs:
+- Small chunks (100-300 tokens): precise retrieval, may lose context
+- Large chunks (500-1000 tokens): more context, may dilute relevance
+- Typical sweet spot: 300-500 tokens with 50-100 token overlap
+
+Overlap:
+- Ensures context at boundaries is not lost
+- A sentence split between chunks can be in both via overlap
+
+Frequently Asked Questions:
+- What is RAG and why is it used?
+- What is the difference between RAG and fine-tuning?
+- What is chunking? What chunk size should you use?
+- What is the role of overlap in chunking?
+- How does retrieval work in RAG? (Embedding similarity search)
+- What are the limitations of RAG? (Retrieval quality, chunk quality, context window limits)
+
+---
+
+SECTION 6: VECTOR DATABASES AND FAISS
+---------------------------------------
+Vector Database:
+- Database optimized for storing and searching high-dimensional vectors
+- Core operation: approximate nearest neighbor (ANN) search
+- Returns vectors most similar to a query vector
+
+FAISS (Facebook AI Similarity Search):
+- Open-source library for efficient similarity search
+- Extremely fast — can search millions of vectors in milliseconds
+- Supports GPU and CPU
+- Index types:
+  - IndexFlatL2: exact search using L2 distance (brute force, accurate, slow at scale)
+  - IndexFlatIP: exact search using inner product (dot product / cosine)
+  - IndexIVFFlat: inverted file index — clusters vectors, searches only closest clusters (faster, approximate)
+  - IndexHNSW: hierarchical navigable small world graph (very fast ANN search)
+
+FAISS Basic Usage:
+  import faiss
+  import numpy as np
+
+  dimension = 384
+  index = faiss.IndexFlatL2(dimension)
+
+  # Add vectors
+  vectors = np.random.rand(1000, dimension).astype('float32')
+  index.add(vectors)
+
+  # Search
+  query = np.random.rand(1, dimension).astype('float32')
+  distances, indices = index.search(query, k=5)
+
+Other Vector Databases:
+- Chroma: easy to use, good for development and small scale
+- Pinecone: managed cloud vector database, scalable
+- Weaviate: vector DB with GraphQL interface
+- Qdrant: high-performance vector store
+- Milvus: open-source, scalable, cloud-native
+
+Frequently Asked Questions:
+- What is a vector database and why is it used?
+- What is FAISS? How does it work?
+- What is approximate nearest neighbor search?
+- What is the difference between FAISS and Chroma?
+- How do you persist FAISS index to disk?
+  faiss.write_index(index, "index.faiss")
+  index = faiss.read_index("index.faiss")
+
+---
+
+SECTION 7: PROMPT ENGINEERING
+-------------------------------
+What is Prompt Engineering:
+- The practice of designing effective inputs to guide LLM outputs
+- Can significantly improve response quality without changing model weights
+
+Techniques:
+
+Zero-shot Prompting:
+- Ask the model directly without examples
+- "Translate this to French: Hello World"
+
+Few-shot Prompting:
+- Provide examples in the prompt to guide the format/style
+  "Sentiment: Positive → Label: +1\nSentiment: Negative → Label: -1\nSentiment: Great product! → Label:"
+
+Chain-of-Thought (CoT):
+- Ask the model to reason step by step before giving the final answer
+- "Let's think step by step..."
+- Improves performance on reasoning and math problems
+
+System Prompt / Role Prompting:
+- Set the model's persona or role
+- "You are an expert Python developer. Answer only in Python code with comments."
+
+RAG Prompt Template:
+  You are a placement preparation assistant.
+  Use only the following context to answer the question.
+  If the answer is not in the context, say "I don't have enough information."
+
+  Context:
+  {retrieved_chunks}
+
+  Question:
+  {user_question}
+
+  Answer:
+
+Prompt Engineering Best Practices:
+- Be specific and clear
+- Use delimiters to separate different parts of the prompt
+- Specify the output format
+- Include negative examples (what NOT to do)
+- Test and iterate
+
+Frequently Asked Questions:
+- What is prompt engineering?
+- What is zero-shot vs few-shot prompting?
+- What is chain-of-thought prompting?
+- How do you prevent an LLM from hallucinating?
+
+---
+
+SECTION 8: HALLUCINATIONS
+---------------------------
+What is Hallucination:
+- When an LLM generates confident-sounding but factually incorrect information
+- The model "makes things up" because it generates text based on patterns, not facts
+
+Types:
+- Factual hallucination: states incorrect facts ("Einstein was born in France")
+- Faithfulness hallucination: contradicts the provided context in RAG
+- Entity hallucination: invents people, places, or events that don't exist
+
+Causes:
+- LLM optimizes for plausible text, not accurate text
+- Training data may contain errors
+- Model has no access to real-time information
+- Overconfident in areas with sparse training data
+
+Mitigation Strategies:
+- RAG: ground answers in retrieved factual documents
+- Prompt: "Only answer from the provided context. Say 'I don't know' if not in context."
+- Temperature: lower temperature (0.0-0.3) makes responses more deterministic and less creative
+- Self-consistency: sample multiple responses and find the most common answer
+- Fact-checking pipeline: verify claims against knowledge base
+
+Frequently Asked Questions:
+- What is hallucination in LLMs?
+- How do you reduce hallucinations?
+- Why does RAG help with hallucinations?
+- What is the difference between temperature and top-p in LLM sampling?
+  - Temperature: controls randomness (0 = deterministic, 1 = default, >1 = creative)
+  - Top-p (nucleus sampling): sample from smallest set of tokens whose cumulative probability exceeds p
+
+---
+
+SECTION 9: MODEL EVALUATION AND METRICS
+-----------------------------------------
+NLP Metrics:
+- BLEU: measures n-gram overlap between generated and reference text (used in translation)
+- ROUGE: recall-based metric (used in summarization); ROUGE-1, ROUGE-2, ROUGE-L
+- BERTScore: measures semantic similarity using BERT embeddings
+- Perplexity: measures how well a model predicts a sample; lower is better
+
+RAG-Specific Evaluation:
+- Faithfulness: does the answer only use information from retrieved context?
+- Answer Relevance: is the answer actually answering the question?
+- Context Recall: did retrieval find all relevant documents?
+- Context Precision: are retrieved documents actually relevant?
+
+Frameworks for RAG Evaluation:
+- RAGAs: popular framework for evaluating RAG pipelines
+- TruLens: tracks and evaluates LLM app performance
+
+---
+
+KEYWORDS FOR RETRIEVAL
+-----------------------
+LLM interview questions, large language model, transformer architecture, attention mechanism, self-attention, multi-head attention, positional encoding, embeddings, sentence transformers, all-MiniLM-L6-v2, RAG retrieval augmented generation, FAISS vector database, vector store, chunking, chunk overlap, semantic search, prompt engineering, zero-shot few-shot, chain of thought, hallucination mitigation, GPT BERT T5, fine-tuning vs RAG, cosine similarity, AI interview questions, generative AI placement, LLM placement preparation
