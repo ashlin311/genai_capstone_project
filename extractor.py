@@ -5,13 +5,17 @@ Parses raw JD text into structured fields and builds a search query.
 
 Strategy:
   - Use regex + keyword matching for a fast, dependency-free approach.
-  - Fall back to Claude AI (via Anthropic API) for richer extraction when
+  - Fall back to Groq LLM (Llama 3.1) for richer extraction when
     the text doesn't follow a predictable format.
 """
 
+import os
 import re
 import json
 from typing import TypedDict
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 # ---------------------------------------------------------------------------
@@ -120,7 +124,7 @@ def _extract_with_regex(text: str) -> JDData:
 
         # Bullet / list item inside a section
         bullet_match = re.match(r"^[\*\-\•\◦\✓\>]\s+(.+)", line)
-        numbered_match = re.match(r"^\d+[\.\)]\s+(.+)", line)
+        numbered_match = re.match(r"^\d+[\.]\s+(.+)", line)
         item_text = None
         if bullet_match:
             item_text = bullet_match.group(1).strip()
@@ -168,17 +172,23 @@ def _deduplicate(items: list[str]) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# AI-powered extractor (fallback for unstructured JDs)
+# AI-powered extractor using Groq (fallback for unstructured JDs)
 # ---------------------------------------------------------------------------
 
 async def _extract_with_ai(text: str) -> JDData:
     """
-    Use Claude (via the Anthropic API) to extract structured data from
+    Use Groq LLM (Llama 3.1) to extract structured data from
     free-form JD text. Called only when regex extraction is incomplete.
     """
-    import httpx  # lightweight async HTTP client
+    from langchain_groq import ChatGroq
+    from langchain_core.prompts import ChatPromptTemplate
 
-    prompt = f"""You are a job description parser. Extract the following fields from the JD text below.
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    if not GROQ_API_KEY:
+        raise ValueError("GROQ_API_KEY not found in environment.")
+
+    prompt = ChatPromptTemplate.from_template(
+        """You are a job description parser. Extract the following fields from the JD text below.
 
 Return ONLY a valid JSON object with these keys:
 - "company": string (company name, empty string if not found)
@@ -190,25 +200,19 @@ Return ONLY a valid JSON object with these keys:
 Do NOT include any explanation or markdown. Return raw JSON only.
 
 JD TEXT:
-\"\"\"
-{text}
-\"\"\"
-"""
+{text}"""
+    )
 
-    async with httpx.AsyncClient(timeout=30) as client:
-        response = await client.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={"Content-Type": "application/json"},
-            json={
-                "model": "claude-sonnet-4-6",
-                "max_tokens": 1000,
-                "messages": [{"role": "user", "content": prompt}],
-            },
-        )
-        response.raise_for_status()
-        data = response.json()
+    llm = ChatGroq(
+        model="llama-3.1-8b-instant",
+        temperature=0,
+        groq_api_key=GROQ_API_KEY,
+    )
 
-    raw = data["content"][0]["text"].strip()
+    chain = prompt | llm
+    response = await chain.ainvoke({"text": text})
+    raw = response.content.strip()
+
     # Strip possible markdown fences
     raw = re.sub(r"^```[a-z]*\n?", "", raw)
     raw = re.sub(r"\n?```$", "", raw)
@@ -233,11 +237,11 @@ async def extract_jd_info(text: str, use_ai_fallback: bool = True) -> JDData:
 
     First tries fast regex-based extraction. If key fields (company, role,
     required_skills) are still missing and `use_ai_fallback` is True, it
-    delegates to the Claude AI model for a second attempt.
+    delegates to the Groq LLM for a second attempt.
 
     Args:
         text: Raw text extracted from the PDF.
-        use_ai_fallback: Whether to call the AI API when regex is insufficient.
+        use_ai_fallback: Whether to call the LLM when regex is insufficient.
 
     Returns:
         JDData TypedDict with all structured fields.
