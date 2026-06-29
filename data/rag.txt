@@ -1,0 +1,161 @@
+RAG (Retrieval-Augmented Generation) and LLM Preparation Guide
+
+=== What is RAG? ===
+
+Retrieval-Augmented Generation (RAG) is an AI framework that enhances Large Language Model (LLM) responses by retrieving relevant information from external knowledge sources before generating an answer.
+
+Why RAG?
+- LLMs have a knowledge cutoff date and may not have domain-specific information.
+- RAG reduces hallucinations by grounding responses in retrieved facts.
+- It allows using private or proprietary data without fine-tuning the model.
+- More cost-effective than fine-tuning for many use cases.
+
+=== RAG Architecture ===
+
+The RAG pipeline has two main phases:
+
+1. Indexing Phase (Offline):
+   Documents → Chunking → Embedding → Vector Database
+
+2. Query Phase (Online):
+   User Query → Embedding → Vector Search → Retrieved Chunks → LLM → Answer
+
+=== Key Components ===
+
+1. Document Loading:
+Documents can be loaded from various sources:
+- PDF files using PyPDF2 or pypdf
+- Text files using simple file readers
+- Web pages using web scrapers
+- Databases using SQL connectors
+
+LangChain provides document loaders for 100+ sources.
+
+2. Chunking (Text Splitting):
+Large documents need to be split into smaller chunks for effective retrieval.
+
+Chunking strategies:
+- Fixed-size chunking: Split by character count (e.g., 500 characters per chunk)
+- Recursive character splitting: Split by paragraphs, then sentences, then words
+- Semantic chunking: Split based on meaning using embeddings
+- Sentence-based: Split on sentence boundaries
+
+Important parameters:
+- chunk_size: Maximum size of each chunk (typical: 500-1000 characters)
+- chunk_overlap: Overlap between consecutive chunks to preserve context (typical: 50-200 characters)
+
+Why overlap? Without overlap, information at chunk boundaries may be lost. Overlap ensures continuity.
+
+3. Embeddings:
+Embeddings convert text into numerical vectors that capture semantic meaning.
+
+Popular embedding models:
+- sentence-transformers/all-MiniLM-L6-v2 (384 dimensions, fast, good quality)
+- text-embedding-ada-002 (OpenAI, 1536 dimensions)
+- sentence-transformers/all-mpnet-base-v2 (768 dimensions, higher quality)
+- BAAI/bge-small-en-v1.5 (384 dimensions, optimized for retrieval)
+
+How embeddings work:
+- Similar text produces vectors that are close together in vector space.
+- Distance metrics (cosine similarity, L2 distance) measure similarity.
+- "Python programming" and "coding in Python" would have high cosine similarity.
+
+4. Vector Databases:
+Vector databases store embeddings and enable fast similarity search.
+
+Popular vector databases:
+- FAISS (Facebook AI Similarity Search): In-memory, fast, open-source, good for prototyping
+- ChromaDB: Easy to use, persistent storage, good for small to medium datasets
+- Pinecone: Cloud-hosted, managed service, scalable
+- Weaviate: Open-source, supports hybrid search
+- Qdrant: Open-source, supports filtering
+
+FAISS specifics:
+- Developed by Facebook AI Research
+- Supports multiple index types: Flat (exact search), IVF (approximate), HNSW
+- Very fast for similarity search on millions of vectors
+- No built-in persistence — need to manually save/load index
+- Best for prototyping and medium-scale applications
+
+5. Retrieval:
+The retrieval step finds the most relevant chunks for a given query.
+
+Retrieval strategies:
+- Similarity search: Find chunks with highest cosine similarity to the query
+- MMR (Maximal Marginal Relevance): Balance relevance and diversity
+- Hybrid search: Combine vector search with keyword search (BM25)
+- Re-ranking: Use a cross-encoder to re-rank initial retrieval results
+
+Top-k parameter: Number of chunks to retrieve (typically 3-5 for most applications).
+
+6. Generation (LLM):
+The LLM generates an answer using the retrieved context and user query.
+
+Popular LLMs for RAG:
+- GPT-4 / GPT-3.5-turbo (OpenAI): High quality, paid API
+- Llama 3 (Meta): Open source, can run locally or via APIs like Groq
+- Gemini (Google): Good quality, free tier available
+- Mixtral (Mistral AI): Open source, good performance
+- Claude (Anthropic): High quality reasoning
+
+Prompt engineering for RAG:
+- Always include the retrieved context in the prompt
+- Instruct the model to only use the provided context
+- Add instructions for handling insufficient context
+- Format the output as needed (bullet points, structured data)
+
+=== RAG Interview Questions ===
+
+Q1: What is the difference between RAG and fine-tuning?
+A: RAG retrieves external knowledge at inference time without modifying model weights. Fine-tuning adjusts model weights on domain-specific data. RAG is cheaper, easier to update, and better for factual retrieval. Fine-tuning is better for learning new behaviors or styles.
+
+Q2: How do you evaluate a RAG system?
+A: Key metrics:
+- Retrieval: Precision@k, Recall@k, MRR (Mean Reciprocal Rank)
+- Generation: Faithfulness (does answer match context?), relevancy, completeness
+- End-to-end: Answer correctness, user satisfaction
+- Tools: RAGAS framework for automated evaluation
+
+Q3: What is chunking and why does chunk size matter?
+A: Chunking splits documents into smaller pieces for embedding and retrieval. Too small chunks lose context. Too large chunks may include irrelevant information and reduce retrieval precision. Typical chunk size is 500-1000 characters with 10-20% overlap.
+
+Q4: How do you handle hallucinations in RAG?
+A: Strategies:
+- Use specific prompts instructing the model to only use provided context
+- Lower the temperature parameter for more deterministic outputs
+- Implement answer verification against source documents
+- Use chain-of-thought prompting
+- Add "I don't know" fallback instructions
+
+Q5: What is the difference between dense and sparse retrieval?
+A: Dense retrieval uses embeddings (vectors) for semantic similarity search. Sparse retrieval uses keyword matching (like BM25/TF-IDF). Dense retrieval understands meaning ("dog" matches "puppy"), while sparse retrieval matches exact terms. Hybrid approaches combine both.
+
+Q6: Explain the concept of embedding similarity.
+A: Embeddings are numerical vectors representing text meaning. Cosine similarity measures the angle between two vectors (range: -1 to 1). Higher cosine similarity means more semantically similar text. This enables finding relevant documents even when exact keywords don't match.
+
+=== Common RAG Pitfalls ===
+
+1. Poor chunking: Splitting in the middle of important information.
+2. Wrong embedding model: Using a general model for domain-specific data.
+3. Too few or too many retrieved chunks: 3-5 is usually optimal.
+4. No overlap in chunks: Important context at boundaries gets lost.
+5. Ignoring metadata: Source information helps with filtering and attribution.
+6. Not handling empty retrieval: Always have a fallback response.
+7. Prompt injection: Users may try to override system instructions.
+8. Stale knowledge base: Documents need regular updates.
+
+=== LLM Key Concepts ===
+
+Transformers: The architecture behind modern LLMs. Uses self-attention mechanism to process sequences in parallel.
+
+Tokens: LLMs process text as tokens (subwords). "understanding" might be split into "under" + "standing". Token limits affect context window size.
+
+Temperature: Controls randomness in generation. 0 = deterministic, 1 = creative. For factual RAG responses, use low temperature (0.1-0.3).
+
+Context Window: Maximum number of tokens the model can process at once. GPT-4 supports up to 128K tokens. Larger context windows allow more retrieved chunks.
+
+Prompt Engineering: The art of crafting effective prompts. Key techniques:
+- Zero-shot: Direct question without examples
+- Few-shot: Include examples in the prompt
+- Chain-of-thought: Ask the model to reason step by step
+- System prompts: Set the model's role and behavior

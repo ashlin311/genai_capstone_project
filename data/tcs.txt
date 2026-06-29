@@ -1,0 +1,97 @@
+TCS Interview Experiences and Preparation Guide
+
+=== TCS National Qualifier Test (NQT) ===
+
+The TCS NQT is the first stage of TCS recruitment. It consists of multiple sections:
+
+1. Numerical Ability: Questions on percentages, profit and loss, time and work, averages, ratios, number series.
+2. Verbal Ability: Reading comprehension, sentence completion, error detection, synonyms, antonyms.
+3. Reasoning Ability: Puzzles, seating arrangement, coding-decoding, blood relations, syllogisms, data interpretation.
+4. Programming Logic: Pseudocode, output prediction, basic programming concepts, flowcharts.
+5. Coding Section: Two coding problems to solve in C, C++, Java, or Python. Common topics include string manipulation, arrays, sorting, and mathematical problems.
+
+=== TCS Digital Interview Experience ===
+
+Interview Experience 1 - Software Developer Role:
+Round 1 (Technical):
+- Explain OOP concepts with real-world examples.
+- What is the difference between an abstract class and an interface?
+- Write a program to reverse a linked list.
+- Explain normalization in databases (1NF, 2NF, 3NF, BCNF).
+- What is the difference between TCP and UDP?
+- Questions on time complexity of sorting algorithms.
+
+Round 2 (Technical + Managerial):
+- Explain your final year project in detail.
+- What design patterns have you used?
+- How would you design a URL shortener service?
+- Questions on ACID properties in databases.
+- Difference between process and thread.
+
+Round 3 (HR):
+- Tell me about yourself.
+- Why TCS?
+- Where do you see yourself in 5 years?
+- Are you willing to relocate?
+- What are your salary expectations?
+
+=== TCS Interview Experience 2 - AI/ML Intern ===
+
+Technical Round:
+- What is the difference between supervised and unsupervised learning?
+- Explain gradient descent and its variants (SGD, Adam).
+- What is overfitting? How do you prevent it?
+- Explain precision, recall, and F1-score.
+- What is a confusion matrix?
+- Write Python code to implement linear regression from scratch.
+- What is the difference between bagging and boosting?
+- Explain the bias-variance tradeoff.
+- What is cross-validation? Why is it important?
+
+Python Specific Questions:
+- What are decorators in Python?
+- Explain list comprehension with examples.
+- What is the difference between a list and a tuple?
+- What is GIL (Global Interpreter Lock)?
+- Explain generators and iterators.
+- What are *args and **kwargs?
+- How does memory management work in Python?
+
+=== TCS Common Technical Questions ===
+
+Data Structures:
+- Implement a stack using two queues.
+- Find the middle element of a linked list in one pass.
+- Check if a binary tree is balanced.
+- Implement BFS and DFS for a graph.
+
+Database Questions:
+- Write SQL query to find the second highest salary.
+- Explain joins (INNER, LEFT, RIGHT, FULL OUTER).
+- What is indexing and how does it improve performance?
+- Difference between DELETE, TRUNCATE, and DROP.
+- What are stored procedures and triggers?
+
+Operating Systems:
+- Explain process scheduling algorithms (FCFS, SJF, Round Robin, Priority).
+- What is deadlock? What are the necessary conditions?
+- Explain virtual memory and paging.
+- Difference between mutex and semaphore.
+
+Computer Networks:
+- Explain the OSI model layers.
+- What is the three-way handshake in TCP?
+- Difference between HTTP and HTTPS.
+- What is DNS and how does it work?
+- Explain subnetting.
+
+=== TCS Preparation Tips ===
+
+1. Focus heavily on the NQT exam — it's the elimination round.
+2. Practice at least 50 coding problems on arrays, strings, and basic algorithms.
+3. Revise DBMS and OS fundamentals thoroughly.
+4. Prepare 2-3 projects to discuss in detail.
+5. Be confident in your HR round — TCS values communication skills.
+6. TCS Digital has a higher difficulty level than TCS Ninja.
+7. Time management is crucial in the NQT — practice with timed tests.
+8. Learn about TCS's recent projects and technologies for the HR round.

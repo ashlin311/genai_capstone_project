@@ -1,0 +1,116 @@
+Aptitude Preparation for Placement Exams
+
+=== Quantitative Aptitude ===
+
+1. Number Series:
+Number series questions test your ability to identify patterns.
+
+Types of patterns:
+- Arithmetic progression (constant difference): 2, 5, 8, 11, 14, ... (difference = 3)
+- Geometric progression (constant ratio): 3, 6, 12, 24, 48, ... (ratio = 2)
+- Square series: 1, 4, 9, 16, 25, 36, ... (n^2)
+- Cube series: 1, 8, 27, 64, 125, ... (n^3)
+- Fibonacci-like: 1, 1, 2, 3, 5, 8, 13, ... (sum of previous two)
+- Alternating patterns: 2, 5, 3, 6, 4, 7, ... (two interleaved series)
+
+Practice Question: Find the next number: 2, 6, 12, 20, 30, ?
+Answer: 42 (differences are 4, 6, 8, 10, 12 — increasing by 2)
+
+2. Percentages:
+Key formulas:
+- Percentage = (Part / Whole) × 100
+- Successive percentage changes: If a value changes by a% and then b%, the net change is (a + b + ab/100)%
+- If a price increases by x%, to restore the original price, decrease by (100x)/(100+x)%
+
+Practice Question: A product's price increases by 20% and then decreases by 20%. What is the net change?
+Answer: Net change = 20 - 20 - (20×20)/100 = -4%. The price decreases by 4%.
+
+3. Profit and Loss:
+- Profit% = (Profit / Cost Price) × 100
+- Selling Price = Cost Price + Profit
+- If two items are sold at the same price, one at x% profit and the other at x% loss, there is always a net loss of (x²/100)%.
+
+4. Time and Work:
+- If A can do a job in 'a' days and B can do it in 'b' days, together they take ab/(a+b) days.
+- If A is twice as efficient as B, and B takes 12 days, A takes 6 days.
+- Pipe and cistern problems follow the same logic with filling and draining rates.
+
+Practice Question: A can do a piece of work in 10 days and B can do it in 15 days. In how many days can they do it together?
+Answer: Together = (10 × 15) / (10 + 15) = 150/25 = 6 days.
+
+5. Time, Speed, and Distance:
+- Speed = Distance / Time
+- Average speed for two equal distances at speeds a and b = 2ab/(a+b)
+- Relative speed: same direction = |a-b|, opposite direction = a+b
+- Train problems: add length of train to distance when crossing a platform.
+
+6. Probability:
+- P(event) = favorable outcomes / total outcomes
+- P(A or B) = P(A) + P(B) - P(A and B)
+- P(A and B) = P(A) × P(B) if independent
+- Complementary: P(not A) = 1 - P(A)
+
+Practice Question: Two dice are thrown. What is the probability that the sum is 7?
+Answer: Favorable outcomes = {(1,6),(2,5),(3,4),(4,3),(5,2),(6,1)} = 6. Total = 36. P = 6/36 = 1/6.
+
+7. Permutations and Combinations:
+- nPr = n! / (n-r)! (order matters)
+- nCr = n! / (r! × (n-r)!) (order doesn't matter)
+- Circular permutation = (n-1)!
+
+=== Logical Reasoning ===
+
+1. Coding-Decoding:
+- Letter shifting: Each letter shifted by a fixed number (A→D, B→E means shift of +3)
+- Reverse order coding: WORD → DROW
+- Number coding: A=1, B=2, ..., Z=26
+
+2. Blood Relations:
+Key terms to remember:
+- Father's or Mother's son = Brother
+- Father's or Mother's daughter = Sister
+- Father's father = Grandfather
+- Mother's brother = Maternal Uncle
+- Father's sister = Aunt (Bua)
+
+3. Seating Arrangement:
+- Linear arrangement: People in a row facing a direction.
+- Circular arrangement: People around a table.
+- Draw diagrams to solve these problems.
+
+4. Syllogisms:
+Use Venn diagrams to solve.
+All A are B. Some B are C.
+Conclusion: Some C are A — may or may not be true.
+
+5. Direction Sense:
+- Start from a point and track movements.
+- Remember: turning right from North = East, turning left from North = West.
+
+=== Verbal Ability ===
+
+1. Reading Comprehension:
+- Read the passage carefully before answering.
+- Focus on main idea, tone, and inference questions.
+- Eliminate obviously wrong answers first.
+
+2. Sentence Correction:
+Common errors: subject-verb agreement, tense consistency, pronoun reference, parallelism, dangling modifiers.
+
+3. Vocabulary:
+High-frequency words for placement exams:
+- Ubiquitous: present everywhere
+- Pragmatic: practical, realistic
+- Ephemeral: short-lived
+- Ambiguous: having multiple meanings
+- Meticulous: very careful and precise
+
+=== Aptitude Preparation Strategy ===
+
+1. Practice daily — solve at least 20 problems per day.
+2. Focus on weak areas — identify and improve.
+3. Time yourself — most exams have strict time limits.
+4. Learn shortcuts — for example, Vedic math for multiplication.
+5. Take mock tests — simulate real exam conditions.
+6. Review mistakes — understand why you got a problem wrong.
+7. Focus on high-weightage topics: Number series, percentages, and time & work appear frequently.

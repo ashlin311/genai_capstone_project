@@ -1,0 +1,168 @@
+FastAPI Interview Preparation Guide
+
+=== What is FastAPI? ===
+
+FastAPI is a modern, high-performance web framework for building APIs with Python 3.7+ based on standard Python type hints. It is built on top of Starlette for web handling and Pydantic for data validation.
+
+Key Features:
+- Automatic API documentation (Swagger UI and ReDoc)
+- Data validation using Pydantic models
+- Async support with async/await
+- Dependency injection system
+- High performance — comparable to Node.js and Go
+- Type safety with Python type hints
+
+=== Core FastAPI Concepts ===
+
+1. Path Parameters:
+Path parameters are used to capture values from the URL path.
+
+Example:
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    return {"user_id": user_id}
+
+FastAPI automatically validates that user_id is an integer.
+
+2. Query Parameters:
+Query parameters are appended to the URL after a "?" symbol.
+
+Example:
+@app.get("/items")
+async def list_items(skip: int = 0, limit: int = 10):
+    return {"skip": skip, "limit": limit}
+
+3. Request Body (Pydantic Models):
+Pydantic models define the structure and validation rules for request bodies.
+
+Example:
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    price: float
+    description: str | None = None
+
+@app.post("/items")
+async def create_item(item: Item):
+    return item
+
+4. Response Models:
+You can define what the response should look like using response_model.
+
+Example:
+@app.get("/items/{item_id}", response_model=Item)
+async def get_item(item_id: int):
+    return get_item_from_db(item_id)
+
+5. Dependency Injection:
+FastAPI has a powerful dependency injection system.
+
+Example:
+from fastapi import Depends
+
+async def get_db():
+    db = Database()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get("/users")
+async def get_users(db = Depends(get_db)):
+    return db.get_all_users()
+
+6. Middleware:
+Middleware processes requests before they reach route handlers and responses before they are sent.
+
+Example:
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+7. Background Tasks:
+FastAPI supports running tasks in the background after returning a response.
+
+Example:
+from fastapi import BackgroundTasks
+
+def send_email(email: str, message: str):
+    # Send email logic
+    pass
+
+@app.post("/send-notification")
+async def send_notification(background_tasks: BackgroundTasks):
+    background_tasks.add_task(send_email, "user@example.com", "Hello!")
+    return {"message": "Notification sent in background"}
+
+=== FastAPI Interview Questions ===
+
+Q1: What is the difference between FastAPI and Flask?
+A: FastAPI is async-first, has automatic data validation via Pydantic, auto-generates API docs, and is significantly faster. Flask is synchronous by default, requires manual validation, and needs extensions for features that FastAPI provides built-in.
+
+Q2: How does FastAPI achieve high performance?
+A: FastAPI is built on Starlette (ASGI framework) and uses uvicorn (ASGI server). It supports async/await for non-blocking I/O operations, making it highly performant for concurrent requests.
+
+Q3: What is Pydantic and why is it used in FastAPI?
+A: Pydantic is a data validation library that uses Python type annotations. FastAPI uses it to automatically validate request data, serialize responses, and generate API documentation. It provides clear error messages when validation fails.
+
+Q4: Explain the difference between sync and async endpoints in FastAPI.
+A: Sync endpoints (def) run in a thread pool to avoid blocking the event loop. Async endpoints (async def) run directly on the event loop and should be used when performing I/O operations with async libraries. Use async for database queries, API calls; use sync for CPU-bound tasks.
+
+Q5: What is ASGI and how is it different from WSGI?
+A: ASGI (Asynchronous Server Gateway Interface) supports async operations, WebSockets, and HTTP/2. WSGI (Web Server Gateway Interface) is synchronous only. FastAPI uses ASGI, while Flask traditionally uses WSGI.
+
+Q6: How do you handle authentication in FastAPI?
+A: FastAPI supports OAuth2 with Password flow, JWT tokens, API keys, and HTTP Basic auth. It provides security utilities in fastapi.security module including OAuth2PasswordBearer and OAuth2PasswordRequestForm.
+
+Q7: What are status codes in FastAPI?
+A: FastAPI allows setting HTTP status codes for responses.
+Example: @app.post("/items", status_code=201) — returns 201 Created.
+Common codes: 200 OK, 201 Created, 400 Bad Request, 404 Not Found, 422 Unprocessable Entity, 500 Internal Server Error.
+
+Q8: How do you handle file uploads in FastAPI?
+A: Use UploadFile from fastapi:
+from fastapi import UploadFile, File
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    contents = await file.read()
+    return {"filename": file.filename, "size": len(contents)}
+
+Q9: What is the lifespan context manager in FastAPI?
+A: The lifespan context manager handles startup and shutdown events. It replaces the deprecated on_event decorators.
+
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: load models, connect DB
+    yield
+    # Shutdown: cleanup resources
+
+app = FastAPI(lifespan=lifespan)
+
+Q10: How do you test FastAPI applications?
+A: Use TestClient from fastapi.testclient (based on httpx):
+from fastapi.testclient import TestClient
+client = TestClient(app)
+response = client.post("/items", json={"name": "Test", "price": 9.99})
+assert response.status_code == 200
+
+=== FastAPI Best Practices ===
+
+1. Always use Pydantic models for request/response validation.
+2. Use dependency injection for shared logic (database connections, auth).
+3. Use async endpoints for I/O-bound operations.
+4. Add proper error handling with HTTPException.
+5. Use environment variables for configuration (never hardcode secrets).
+6. Structure larger projects with APIRouter for modular routing.
+7. Enable CORS middleware for frontend integration.
+8. Write tests using TestClient.
+9. Use proper HTTP methods: GET for retrieval, POST for creation, PUT for update, DELETE for deletion.
+10. Document your API — FastAPI auto-generates docs at /docs and /redoc.
