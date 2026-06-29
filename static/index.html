@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Preparation AI Assistant</title>
+    <!-- Outfit Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🤖</div>
+                <div class="logo-text">
+                    <h1>PrepAI</h1>
+                    <span>Placement Assistant</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button id="nav-btn-dashboard" class="nav-item active" onclick="switchTab('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Dashboard</span>
+                </button>
+                <button id="nav-btn-chat" class="nav-item" onclick="switchTab('chat')">
+                    <span class="nav-icon">💬</span>
+                    <span class="nav-label">RAG Chatbot</span>
+                </button>
+                <button id="nav-btn-planner" class="nav-item" onclick="switchTab('planner')">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-label">JD Prep Planner</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-divider"></div>
+
+            <!-- Server Status Widget -->
+            <div class="status-widget">
+                <h3 class="status-title">System Status</h3>
+                <div class="status-item">
+                    <span class="status-label">Backend Connection</span>
+                    <div class="status-indicator-group">
+                        <span id="backend-status-dot" class="status-dot red"></span>
+                        <span id="backend-status-text" class="status-val">Offline</span>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Vector Store</span>
+                    <div class="status-indicator-group">
+                        <span id="vector-status-dot" class="status-dot red"></span>
+                        <span id="vector-status-text" class="status-val">Unloaded</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="presets-widget">
+                <h3 class="status-title">Quick Topics</h3>
+                <div class="presets-list">
+                    <button id="preset-btn-tcs" class="preset-item"
+                        onclick="injectPresetQuery('How should I prepare for a TCS interview for an AI role?')">
+                        TCS AI Interview Prep
+                    </button>
+                    <button id="preset-btn-fastapi" class="preset-item"
+                        onclick="injectPresetQuery('What are typical FastAPI interview questions related to asynchronous endpoints?')">
+                        FastAPI Q&A Focus
+                    </button>
+                    <button id="preset-btn-rag" class="preset-item"
+                        onclick="injectPresetQuery('Explain the difference between RAG and fine-tuning an LLM.')">
+                        RAG vs Fine-tuning
+                    </button>
+                    <button id="preset-btn-hr" class="preset-item"
+                        onclick="injectPresetQuery('What are some common HR interview questions and how to structure answers?')">
+                        HR Interview Tips
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>GenAI Capstone Project</p>
+                <p class="version-label">v1.0.0</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="app-main">
+            <!-- Header bar -->
+            <header class="main-header">
+                <h2 id="current-view-title">Dashboard</h2>
+                <div class="header-actions">
+                    <button id="theme-toggle-btn" class="theme-toggle" onclick="toggleTheme()"
+                        title="Toggle Theme">🌙</button>
+                </div>
+            </header>
+
+            <div class="view-content-wrapper">
+                <!-- TAB 1: DASHBOARD VIEW -->
+                <section id="view-dashboard" class="tab-view active">
+
+
+                    <div class="dashboard-grid">
+                        <!-- Feature card 1 -->
+                        <div class="feature-card" onclick="switchTab('chat')">
+                            <div class="feature-icon bg-indigo">💬</div>
+                            <h3 class="feature-title">RAG Chatbot</h3>
+                            <p class="feature-desc">Ask specific placement preparation questions. Get answers backed by
+                                verified experience text files and training documents.</p>
+                            <span class="feature-action-link">Open Chatbot &rarr;</span>
+                        </div>
+
+                        <!-- Feature card 2 -->
+                        <div class="feature-card" onclick="switchTab('planner')">
+                            <div class="feature-icon bg-cyan">📄</div>
+                            <h3 class="feature-title">JD Prep Planner</h3>
+                            <p class="feature-desc">Upload any PDF Job Description. PrepAI extracts key skills,
+                                generates a targeted search query, and creates an LLM study guide.</p>
+                            <span class="feature-action-link">Analyze Job Description &rarr;</span>
+                        </div>
+                    </div>
+
+                    <div class="system-guide-card">
+                        <h3>Getting Started Guide</h3>
+                        <ol class="guide-steps">
+                            <li>
+                                <strong>Setup LLM Keys:</strong> Ensure that your Groq API key is set up in a
+                                <code>.env</code> file in the project folder root.
+                            </li>
+                            <li>
+                                <strong>Build Vectorstore:</strong> If the Vector Store status shows "Unloaded", run
+                                <code>python ingest.py</code> in your project directory to build the database from local
+                                text archives.
+                            </li>
+                            <li>
+                                <strong>Ask Questions:</strong> Navigate to the <strong>RAG Chatbot</strong> to query
+                                general topics like Aptitude, HR Questions, or TCS Placement logs.
+                            </li>
+                            <li>
+                                <strong>Upload Job Descriptions:</strong> Head over to the <strong>JD Prep
+                                    Planner</strong>, drag in a PDF JD, and watch the pipeline build a custom
+                                preparation study guide.
+                            </li>
+                        </ol>
+                    </div>
+                </section>
+
+                <!-- TAB 2: CHATBOT VIEW -->
+                <section id="view-chat" class="tab-view">
+                    <div class="chat-container">
+                        <div id="chat-messages-box" class="chat-messages">
+                            <!-- Welcome Message -->
+                            <div class="message system-msg">
+                                <div class="msg-avatar">🤖</div>
+                                <div class="msg-bubble">
+                                    <p>Hello! I am your placement preparation assistant. I can answer questions about
+                                        placements using our curated knowledge base. What would you like to prepare for
+                                        today?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat suggestions -->
+                        <div id="chat-suggestions-container" class="chat-suggestions">
+                            <button id="suggest-btn-tcs-2" class="suggest-chip"
+                                onclick="injectPresetQuery('What coding topics are usually tested in TCS coding round?')">TCS
+                                Coding Topics</button>
+                            <button id="suggest-btn-fastapi-2" class="suggest-chip"
+                                onclick="injectPresetQuery('Explain dependency injection in FastAPI.')">FastAPI
+                                Dependency Injection</button>
+                            <button id="suggest-btn-aptitude" class="suggest-chip"
+                                onclick="injectPresetQuery('What are typical quantitative aptitude topics for placements?')">Quantitative
+                                Aptitude</button>
+                        </div>
+
+                        <!-- Message Input Form -->
+                        <form id="chat-form-element" class="chat-input-area" onsubmit="handleChatSubmit(event)">
+                            <button id="chat-clear-btn" type="button" class="btn-clear-chat"
+                                onclick="clearChatHistory()" title="Clear Chat History">🗑️</button>
+                            <input id="chat-input-text" type="text" class="chat-text-input"
+                                placeholder="Type a placement preparation question... (e.g. How does FAST-API handle routes?)"
+                                required minlength="3" maxlength="1000">
+                            <button id="chat-submit-btn" type="submit" class="btn-submit-chat">
+                                <span class="send-icon">📤</span> Send
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- TAB 3: JD PREP PLANNER VIEW -->
+                <section id="view-planner" class="tab-view">
+                    <!-- Drop Zone Card -->
+                    <div id="jd-upload-card" class="upload-container">
+                        <div class="upload-dropzone" id="drop-zone-element" onclick="triggerFileInput()"
+                            ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"
+                            ondrop="handleDrop(event)">
+                            <input type="file" id="jd-file-input" class="hidden-file-input" accept="application/pdf"
+                                onchange="handleFileSelect(event)">
+                            <div class="upload-icon">📂</div>
+                            <h3>Drag & Drop Job Description PDF</h3>
+                            <p>or click to browse your local files</p>
+                            <span class="file-limits">Only PDF format supported (Max 10MB)</span>
+                        </div>
+                    </div>
+
+                    <!-- Processing / Loading State -->
+                    <div id="jd-loading-card" class="loading-container hidden">
+                        <div class="spinner"></div>
+                        <h3 id="loading-state-text">Uploading Job Description PDF...</h3>
+                        <p>Running pipeline: PDF Extraction &rarr; JD Parsing &rarr; FAISS Search &rarr; Prep Guide
+                            Generation</p>
+                        <div class="progress-bar-container">
+                            <div id="jd-progress-bar" class="progress-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pipeline Results Display -->
+                    <div id="jd-results-container" class="results-layout hidden">
+                        <!-- Left Panel: Structured Info -->
+                        <div class="results-sidebar-card">
+                            <div class="results-sidebar-header">
+                                <h3 id="result-company-name">Company Name</h3>
+                                <span id="result-role-title" class="role-badge">Role Title</span>
+                            </div>
+
+                            <div class="results-metadata-section">
+                                <h4>Required Skills</h4>
+                                <div id="result-required-skills" class="skills-tags">
+                                    <!-- Dynamic required skills -->
+                                </div>
+                            </div>
+
+                            <div class="results-metadata-section">
+                                <h4>Preferred Skills</h4>
+                                <div id="result-preferred-skills" class="skills-tags">
+                                    <!-- Dynamic preferred skills -->
+                                </div>
+                            </div>
+
+                            <div class="results-metadata-section">
+                                <h4>Keywords & Soft Skills</h4>
+                                <div id="result-keywords" class="skills-tags">
+                                    <!-- Dynamic keywords -->
+                                </div>
+                            </div>
+
+                            <div class="results-metadata-section">
+                                <h4>RAG Vector Query</h4>
+                                <div class="query-box-code">
+                                    <code id="result-search-query">Search query code...</code>
+                                </div>
+                            </div>
+
+                            <button id="re-upload-btn" class="btn-secondary w-full" onclick="resetPlanner()">
+                                🔄 Upload Another Job Description
+                            </button>
+                        </div>
+
+                        <!-- Right Panel: AI Study Guide -->
+                        <div class="results-main-card">
+                            <div class="results-main-header">
+                                <h3>Personalized Placement Preparation Guide</h3>
+                                <div class="guide-actions">
+                                    <button id="btn-copy-guide" class="btn-action-icon" onclick="copyPrepGuide()"
+                                        title="Copy Guide to Clipboard">📋 Copy</button>
+                                    <button id="btn-download-guide" class="btn-action-icon"
+                                        onclick="downloadPrepGuide()" title="Download as HTML Report">📥
+                                        Download</button>
+                                </div>
+                            </div>
+
+                            <div class="guide-content-area">
+                                <div id="result-ai-guide" class="formatted-guide">
+                                    <!-- Generated Prep Guide markdown/HTML content -->
+                                </div>
+                            </div>
+
+                            <div class="guide-sources-footer">
+                                <h4>Sources Consulted:</h4>
+                                <div id="result-guide-sources" class="sources-badges-list">
+                                    <!-- Dynamic source badges -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-notifications-container" class="toast-container"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>

@@ -18,6 +18,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from retriever import load_vectorstore, retrieve
@@ -87,17 +89,17 @@ async def lifespan(app: FastAPI):
     vectorstore_dir = os.path.join(os.path.dirname(__file__), "vectorstore")
 
     try:
-        print("🚀 Loading FAISS vector store...")
+        print("[*] Loading FAISS vector store...")
         app_state["vectorstore"] = load_vectorstore(vectorstore_dir)
-        print("✅ Vector store loaded successfully!")
+        print("[OK] Vector store loaded successfully!")
     except FileNotFoundError:
-        print("⚠️  Vector store not found. Run 'python ingest.py' first.")
+        print("[WARN] Vector store not found. Run 'python ingest.py' first.")
         app_state["vectorstore"] = None
 
     yield  # App is running
 
     app_state["vectorstore"] = None
-    print("🛑 Application shut down.")
+    print("[*] Application shut down.")
 
 
 # --- FastAPI App ---
@@ -121,6 +123,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Serve static files from the 'static' directory
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if not os.path.exists(static_dir):
+    os.makedirs(static_dir)
+
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+
+@app.get("/", tags=["UI"])
+async def serve_ui():
+    """Serve the single-page web UI."""
+    return FileResponse(os.path.join(static_dir, "index.html"))
 
 
 # --- Endpoints ---
