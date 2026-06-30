@@ -24,14 +24,12 @@ PLACEMENT_PROMPT = ChatPromptTemplate.from_template(
 
 {jd_context_block}
 
-Answer only using the retrieved context. If the user asks specifically about the active Job Description (JD) details provided above, you can also use those details to answer.
-If relevant context is not found in the documents or the active JD, say:
+CRITICAL INSTRUCTIONS:
+- You must answer the question using ONLY the facts, topics, and guidelines explicitly written in the "Context" or the active Job Description (JD) details provided above.
+- If the user asks about a specific company (like dSpace), role, or topic, and that company or topic is NOT explicitly mentioned in either the provided Context or the active JD, you MUST respond exactly with:
 "I could not find enough relevant preparation material."
-
-Provide a well-structured, helpful answer with:
-- Clear headings and bullet points
-- Specific examples when available
-- Actionable preparation tips
+- Do NOT use your general pre-trained knowledge to answer, extrapolate, or invent details that are not in the Context.
+- Do NOT list concepts (e.g. AVL Trees, Rabin-Karp, Huffman Coding) if they are not written in the Context or the active JD.
 
 Context:
 {context}
