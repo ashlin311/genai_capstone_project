@@ -55,14 +55,19 @@ def retrieve(query: str, vectorstore=None, k: int = TOP_K):
     results = vectorstore.similarity_search_with_score(query, k=k)
 
     retrieved_chunks = []
+    # Lower L2 score is better. Filter out items with score > 1.15 to prevent noise.
+    SCORE_THRESHOLD = 1.15
+
     for doc, score in results:
-        # Extract the source filename from metadata
-        source = os.path.basename(doc.metadata.get("source", "unknown"))
-        retrieved_chunks.append({
-            "content": doc.page_content,
-            "source": source,
-            "score": round(float(score), 4),
-        })
+        score_val = float(score)
+        if score_val <= SCORE_THRESHOLD:
+            # Extract the source filename from metadata
+            source = os.path.basename(doc.metadata.get("source", "unknown"))
+            retrieved_chunks.append({
+                "content": doc.page_content,
+                "source": source,
+                "score": round(score_val, 4),
+            })
 
     return retrieved_chunks
 
